@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="white" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
-  <property name="author" type="string" value="redshrike"/>
-  <property name="category" value="body"/>
-  <property name="layer" type="int" value="0"/>
+  <property name="author" value="wulax"/>
+  <property name="category" value="clothes;long sleeve shirt"/>
+  <property name="incomplete" type="bool" value="false"/>
+  <property name="layer" type="int" value="2"/>
   <property name="license" value="GNU GPL 3.0;CC-BY-SA 3.0"/>
-  <property name="sex" type="int" value="1"/>
-  <property name="url" value="http://lpc.opengameart.org/static/lpc-style-guide/assets.html"/>
+  <property name="sex" type="int" value="0"/>
+  <property name="url" value="https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"/>
  </properties>
- <image source="man-white.png" width="832" height="1344"/>
+ <image source="white_longsleeve.png" width="832" height="1344"/>
  <tile id="0">
   <properties>
    <property name="animation" value="spellcast"/>

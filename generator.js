@@ -5,6 +5,7 @@ class Spritesheet {
         this.src = src;
         this.layer = attributes['layer'];
         this.category = attributes['category'].split(';');
+        this.author = attributes['author'].split(';');
         this.sex = attributes['sex'];
         this.license = attributes['license'].split(';');
         this.url = attributes['url'];
@@ -56,8 +57,15 @@ class Category {
         return this.sprites;
     }
 
-    addSpriteset(ss) {
-        this.sprites.push(ss);
+    //add to existing set or create new one
+    addSprite(sprite) {
+        for (let i in this.sprites){
+            if (this.sprites[i][0].name == sprite.name){
+                this.sprites[i].push(sprite);
+                return;
+            }
+        }
+        this.sprites.push([sprite]);
     }
 }
 
@@ -82,37 +90,49 @@ class LpcGenerator {
         this.authors = {};
     }
 
-    drawSprite(parent, spriteset){
-        let li = document.createElement("li");
-        let input = document.createElement("input");
-        input.name = spriteset[0].name;
-        input.type = "radio"
-        let label = document.createElement("label");
-        label.appendChild(document.createTextNode(spriteset[0].name));
+    drawSprite(parent, mainCat, spriteset){
+        let li = document.createElement('li');
+        let input = document.createElement('input');
+        input.name = mainCat;
+        if(spriteset){
+            //replace space with hyphen
+            let categoryHandle = spriteset[0].category.join('-').replace(/\s/g, '-');
+            input.value = categoryHandle + '-' + spriteset[0].name;
+        } else {
+            input.value = 'none';
+        }
+        input.type = 'radio'
+        let label = document.createElement('label');
+        label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
         li.appendChild(input);
         li.appendChild(label);
         parent.appendChild(li);
     }
 
     //generate html list for category recursively
-    drawCategory(parent, category){
-        let li = document.createElement("li");
-        let ul = document.createElement("ul");
-        ul.style = "display:block;"
-        let span = document.createElement("span");
+    drawCategory(parent, mainCat, category){
+        let li = document.createElement('li');
+        let ul = document.createElement('ul');
+        ul.style = 'display:block;'
+        let span = document.createElement('span');
         span.appendChild(document.createTextNode(category.name));
-        span.className = "expanded";
+        span.className = 'expanded';
         li.appendChild(span);
         li.appendChild(ul);
-        parent.appendChild(li);
-        let children = category.getCategories();
-        for (let i in children) {
-            this.drawCategory(ul, children[i])
+        if(mainCat == category.name){
+            //create empty option
+            this.drawSprite(ul, mainCat);
         }
         let sprites = category.getSpritesets();
         for (let i in sprites) {
-            this.drawSprite(ul, sprites[i])
+            this.drawSprite(ul, mainCat, sprites[i])
         }
+        let children = category.getCategories();
+        for (let i in children) {            //TODO: load author JSON
+            this.drawCategory(ul, mainCat, children[i])
+        }
+        //delay browser rendering as much as possible
+        parent.appendChild(li);
     }
 
     updateGui(){
@@ -123,7 +143,7 @@ class LpcGenerator {
         }
         let mainCategories = this.categories.getCategories();
         for (let i in mainCategories) {
-            this.drawCategory(mainList, mainCategories[i])
+            this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
 
     }
@@ -132,7 +152,7 @@ class LpcGenerator {
     loadTsx (path) {
         let req = new XMLHttpRequest();
         let that = this;
-        req.addEventListener("load", function() {
+        req.addEventListener('load', function() {
             let name = this.responseXML.getElementsByTagName('tileset')[0].getAttribute('name');
             let src = this.responseXML.getElementsByTagName('image')[0].getAttribute('source');
             let properties = this.responseXML.getElementsByTagName('properties')[0];
@@ -149,12 +169,8 @@ class LpcGenerator {
                 return;
             
             let tmpSprite = new Spritesheet(name, src, attributes);
-            //allow multiple sprites with same name
-            if(that.spritesheets[name]){
-                that.spritesheets[name].push(tmpSprite)
-            }else{
-                that.spritesheets[name] = [tmpSprite];
-            }
+            //replace space with hyphen
+            let categoryHandle = tmpSprite.category.join('-').replace(/\s/g, '-');
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -166,11 +182,9 @@ class LpcGenerator {
                 lastCat = lastCat.getCategory(categories[i]);
             }
             //add sprite to latest category
-            if(!lastCat.hasSpriteset(name))
-                lastCat.addSpriteset(that.spritesheets[name]);
+            lastCat.addSprite(tmpSprite);
     
             //manage authors
-            //TODO: load author JSON
             let authors = attributes['author'].split(';');
             for (let i in authors){
                 //create if doesn’t exist
@@ -195,7 +209,7 @@ class LpcGenerator {
         req.responseType = 'text';
         req.overrideMimeType('text/json');
         let that = this;
-        req.addEventListener("load", function(){
+        req.addEventListener('load', function(){
             //convert to json and iterate through the array
             var author = JSON.parse(this.responseText);
             if(!that.authors[name])
@@ -212,7 +226,7 @@ class LpcGenerator {
         req.responseType = 'text';
         req.overrideMimeType('text/json');
         let that = this;
-        req.addEventListener("load", function(){
+        req.addEventListener('load', function(){
             //convert to json and iterate through the array
             var list = JSON.parse(this.responseText);
             for (let i in list) {
