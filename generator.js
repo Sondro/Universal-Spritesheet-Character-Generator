@@ -193,7 +193,15 @@ class LpcGenerator {
         let children = category.getCategories();
         for (let i in children) {            //TODO: load author JSON
             this.drawCategory(ul, mainCat, children[i])
-        }        
+        }
+        //hide empty categories
+        if(ul.childElementCount == 0){
+            parent.removeChild(li);
+        }
+        //hide main categories that only contain none
+        if(ul.childElementCount == 1 && mainCat == category.name){
+            parent.removeChild(li);
+        }
     }
 
     drawCanvas(){
