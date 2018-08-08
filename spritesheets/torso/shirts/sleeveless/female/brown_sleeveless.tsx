@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="white" tilewidth="64" tileheight="64" tilecount="273" columns="13">
+<tileset name="brown" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
-  <property name="author" value="wulax"/>
-  <property name="category" value="clothes;long sleeve shirt"/>
+  <property name="author" value="jrconway3;jaidynreiman"/>
+  <property name="category" value="clothes;sleeveless shirt"/>
   <property name="incomplete" type="bool" value="false"/>
   <property name="layer" type="int" value="2"/>
   <property name="license" value="GNU GPL 3.0;CC-BY-SA 3.0"/>
-  <property name="sex" type="int" value="1"/>
-  <property name="url" value="https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"/>
-  <property name="title" value="[LPC] Medieval fantasy character sprites"/>
+  <property name="sex" type="int" value="2"/>
+  <property name="url" value="https://github.com/jrconway3/Universal-LPC-spritesheet"/>
  </properties>
- <image source="white_longsleeve.png" width="832" height="1344"/>
+ <image source="brown_sleeveless.png" width="832" height="1344"/>
  <tile id="0">
   <properties>
    <property name="animation" value="spellcast"/>

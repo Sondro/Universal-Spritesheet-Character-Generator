@@ -2,5 +2,10 @@
     "body/male/man_white.tsx",
     "body/female/woman_white.tsx",
     "torso/shirts/longsleeve/male/brown_longsleeve.tsx",
-    "torso/shirts/longsleeve/male/white_longsleeve.tsx"
+    "torso/shirts/longsleeve/male/white_longsleeve.tsx",
+    "torso/shirts/sleeveless/female/brown_sleeveless.tsx",
+    "belt/leather/male/leather_male.tsx",
+    "head/caps/male/leather_cap_male.tsx",
+    "legs/skirt/male/robe_skirt_male.tsx",
+    "feet/shoes/male/brown_shoes_male.tsx"
 ]
