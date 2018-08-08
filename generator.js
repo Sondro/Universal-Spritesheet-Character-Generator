@@ -1,6 +1,17 @@
+document.addEventListener('click', function(ev){
+    console.log(ev);
+    if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
+        lpcGenerator.updateGui();
+    }
+    if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
+        lpcGenerator.updateGui();
+        return true;
+    }
+});
+
 //class for spritesheets
 class Spritesheet {
-    constructor(name, src, attributes = {}){
+    constructor(name, src, width, height, attributes = {}){
         this.name = name;
         this.src = src;
         this.layer = attributes['layer'];
@@ -9,6 +20,9 @@ class Spritesheet {
         this.sex = attributes['sex'];
         this.license = attributes['license'].split(';');
         this.url = attributes['url'];
+        this.img = new Image(width, height);
+        this.img.src = src;
+        this.img.onload = function(){lpcGenerator.updateGui};
     }
 }
 
@@ -86,8 +100,8 @@ class LpcGenerator {
     constructor(){
         this.categories = new Category('all');
         this.animations = [];
-        this.spritesheets = [];
         this.authors = {};
+        this.layers = {min: 0, max: 0}
     }
 
     drawSprite(parent, mainCat, spriteset){
@@ -145,16 +159,30 @@ class LpcGenerator {
         for (let i in mainCategories) {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
+        //let ctx = this.category.getCategory('body').getSpriteset('white')[0].img
+        let ctx = document.getElementById('spritesheet').getContext('2d');
+        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.complete)
+        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.src)
+        ctx.drawImage(this.categories.getCategory('body').getSpriteset('white')[0].img,0,0)
+        for(let i = this.layers.min; i <= this.layers.max; i++){
 
+        }
     }
 
     //load tileset via AJAX
     loadTsx (path) {
         let req = new XMLHttpRequest();
+        let dirArr = path.split('/');
+        dirArr.pop();
+        let dirPath = dirArr.join('/');
         let that = this;
         req.addEventListener('load', function() {
-            let name = this.responseXML.getElementsByTagName('tileset')[0].getAttribute('name');
-            let src = this.responseXML.getElementsByTagName('image')[0].getAttribute('source');
+            let tileset = this.responseXML.getElementsByTagName('tileset')[0];
+            let image = this.responseXML.getElementsByTagName('image')[0];
+            let name = tileset.getAttribute('name');
+            let src = dirPath + '/' + image.getAttribute('source');
+            let height = image.getAttribute('height');
+            let width = image.getAttribute('width');
             let properties = this.responseXML.getElementsByTagName('properties')[0];
             //initialized
             let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
@@ -164,11 +192,16 @@ class LpcGenerator {
                     attributes[properties.children[i].getAttribute('name')] = properties.children[i].getAttribute('value');
                 }
             }
+            //adjust max and min layer
+            if(attributes['layer'] > that.layers.max)
+                that.layers.max = attributes['layer'];
+            if(attributes['layer'] < that.layers.min)
+                that.layers.min = attributes['layer'];
             //don't load incomplete spritesheets
             if(attributes['incomplete'] == 'true')
                 return;
             
-            let tmpSprite = new Spritesheet(name, src, attributes);
+            let tmpSprite = new Spritesheet(name, src, width, height, attributes);
             //replace space with hyphen
             let categoryHandle = tmpSprite.category.join('-').replace(/\s/g, '-');
             //manage categories
