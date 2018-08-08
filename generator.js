@@ -6,14 +6,13 @@ document.addEventListener('click', function(ev){
     if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
         //iterate through all categories
         let mainCategories = lpcGenerator.categories.getCategories();
-        selection = "";
+        selection = "sex=" + document.querySelector('input[name="sex"]:checked').value;
         for (let i in mainCategories) {
             //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
             name = mainCategories[i].name;
             let radio = document.querySelector('input[name="' + name + '"]:checked');
             if(radio && radio.value != 'none'){
-                if(selection != "")
-                    selection += "&";
+                selection += "&";
                 selection += name + '=' + radio.value;
             }else{
                 console.log('input[name="' + name + '"]:checked not found');
@@ -34,11 +33,16 @@ class Spritesheet {
     constructor(name, src, width, height, attributes = {}){
         this.name = name;
         this.src = src;
+        //original title of the asset
+        this.title = attributes['title'];
         this.layer = attributes['layer'];
         this.category = attributes['category'].split(';');
+        //author names corresponding to authors/<name>.json
         this.author = attributes['author'].split(';');
+        //1: male, 3: female etc.
         this.sex = attributes['sex'];
         this.license = attributes['license'].split(';');
+        //url of the source
         this.url = attributes['url'];
         this.img = new Image(width, height);
         this.img.src = src;
@@ -144,8 +148,8 @@ class LpcGenerator {
         }
         input.type = 'radio'
         let label = document.createElement('label');
+        label.appendChild(input);
         label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
-        li.appendChild(input);
         li.appendChild(label);
         parent.appendChild(li);
     }
@@ -177,25 +181,59 @@ class LpcGenerator {
     }
 
     drawCanvas(){
-        let ctx = document.getElementById('spritesheet').getContext('2d');
-/*         console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.complete)
-        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.src)
-        ctx.drawImage(this.categories.getCategory('body').getSpriteset('white')[0].img,0,0) */
+        let canvas = document.getElementById('spritesheet');
+        let ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let layers = this.getLayers();
+        for (let layer in layers){
+            for (let sprite in layers[layer]){
+                ctx.drawImage(layers[layer][sprite].img, 0, 0)
+            }
+        }
+    }
 
-/*         for(let i = this.layers.min; i <= this.layers.max; i++){
+    generateAttribution(){
+        let attribution = document.getElementById('attribution');
+        let tmpAttr = "";
 
-        } */
+    }
+
+    getSex(){
+        return jHash.val('sex') || 1;
+    }
+
+    //extract active layers from location bar
+    getLayers(){
+        let sprites = [];
+        //extract used assets from location bar
         let hash = jHash.val();//.split('.');
-        for (let i in hash){
+        for (let i in hash){ if(i != 'sex'){
             let category = decodeURI(hash[i]).split('.');
             let name = category.pop();
             let lastCat = this.categories;
             for (let j in category) {
                     lastCat = lastCat.getCategory(category[j]);
             }
-            console.log(lastCat.getSpriteset(name)[0]);
-            ctx.drawImage(lastCat.getSpriteset(name)[0].img,0,0)
+            for (let j in lastCat.getSpriteset(name)){
+                //only include spritesets with correct sex
+                let sprite = lastCat.getSpriteset(name)[j];
+                console.log(sprite.sex, this.getSex(), sprite.sex & this.getSex())
+                if(sprite.sex == 0 || sprite.sex & this.getSex()){
+                    sprites.push(sprite);
+                }
+            }
+        }}
+
+        let layers = [];
+        for(let i = this.layers.min; i <= this.layers.max; i++){
+            let newLayer = i + this.layers.min;
+            layers[newLayer] = [];
+            for(let j in sprites){
+                if(sprites[j].layer == i)
+                    layers[newLayer].push(sprites[j])
+            }
         }
+        return layers;
     }
 
     updateGui(){

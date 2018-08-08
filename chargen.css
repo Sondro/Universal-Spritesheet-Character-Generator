@@ -107,12 +107,12 @@ ul {
 
 #chooser>ul>li>.condensed:after, #chooser>ul>li>ul>li>.condensed:after {
 	padding-left: 10px;
-	content: url('images/arrow_right.png');
+	content: "▸";
 }
 
 #chooser>ul>li>.expanded:after, #chooser>ul>li>ul>li>.expanded:after {
 	padding-left: 10px;
-	content: url('images/arrow_down.png');
+	content: "▾";
 }
 
 #chooser>ul>li>ul>li>ul {
