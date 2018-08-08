@@ -4,10 +4,30 @@ document.addEventListener('click', function(ev){
         lpcGenerator.updateGui();
     }
     if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
-        lpcGenerator.updateGui();
-        return true;
+        //iterate through all categories
+        let mainCategories = lpcGenerator.categories.getCategories();
+        selection = "";
+        for (let i in mainCategories) {
+            //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
+            name = mainCategories[i].name;
+            let radio = document.querySelector('input[name="' + name + '"]:checked');
+            if(radio && radio.value != 'none'){
+                if(selection != "")
+                    selection += "&";
+                selection += name + '=' + radio.value;
+            }else{
+                console.log('input[name="' + name + '"]:checked not found');
+            }
+        }
+        console.log(selection);
+        window.location = '#?' + selection
+        lpcGenerator.drawCanvas();
     }
 });
+
+function getSelection(){
+    
+}
 
 //class for spritesheets
 class Spritesheet {
@@ -109,11 +129,18 @@ class LpcGenerator {
         let input = document.createElement('input');
         input.name = mainCat;
         if(spriteset){
-            //replace space with hyphen
-            let categoryHandle = spriteset[0].category.join('-').replace(/\s/g, '-');
-            input.value = categoryHandle + '-' + spriteset[0].name;
+            let categoryHandle = spriteset[0].category.join('.');
+            input.value = categoryHandle + '.' + spriteset[0].name;
+            //check if this was enabled
+            if(decodeURI(jHash.val(mainCat)) == input.value){
+                input.checked = 'checked';
+            }
         } else {
             input.value = 'none';
+            //choose none is nothing is set
+            if(!jHash.val(mainCat)){
+                input.checked = 'checked';
+            }
         }
         input.type = 'radio'
         let label = document.createElement('label');
@@ -149,6 +176,28 @@ class LpcGenerator {
         parent.appendChild(li);
     }
 
+    drawCanvas(){
+        let ctx = document.getElementById('spritesheet').getContext('2d');
+/*         console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.complete)
+        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.src)
+        ctx.drawImage(this.categories.getCategory('body').getSpriteset('white')[0].img,0,0) */
+
+/*         for(let i = this.layers.min; i <= this.layers.max; i++){
+
+        } */
+        let hash = jHash.val();//.split('.');
+        for (let i in hash){
+            let category = decodeURI(hash[i]).split('.');
+            let name = category.pop();
+            let lastCat = this.categories;
+            for (let j in category) {
+                    lastCat = lastCat.getCategory(category[j]);
+            }
+            console.log(lastCat.getSpriteset(name)[0]);
+            ctx.drawImage(lastCat.getSpriteset(name)[0].img,0,0)
+        }
+    }
+
     updateGui(){
         let mainList = document.getElementById('chooser').getElementsByTagName('ul')[0];
         //remove all children but those in the 'keep' class
@@ -159,14 +208,7 @@ class LpcGenerator {
         for (let i in mainCategories) {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
-        //let ctx = this.category.getCategory('body').getSpriteset('white')[0].img
-        let ctx = document.getElementById('spritesheet').getContext('2d');
-        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.complete)
-        console.log(this.categories.getCategory('body').getSpriteset('white')[0].img.src)
-        ctx.drawImage(this.categories.getCategory('body').getSpriteset('white')[0].img,0,0)
-        for(let i = this.layers.min; i <= this.layers.max; i++){
-
-        }
+        this.drawCanvas();
     }
 
     //load tileset via AJAX
@@ -202,8 +244,6 @@ class LpcGenerator {
                 return;
             
             let tmpSprite = new Spritesheet(name, src, width, height, attributes);
-            //replace space with hyphen
-            let categoryHandle = tmpSprite.category.join('-').replace(/\s/g, '-');
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -280,4 +320,8 @@ class LpcGenerator {
 window.lpcGenerator = new LpcGenerator();
 window.onload=function (){
     lpcGenerator.loadList('spritesheets/');
+    console.log(jHash.val());
+    jHash.change(function() {
+        lpcGenerator.drawCanvas();
+    });
 };
