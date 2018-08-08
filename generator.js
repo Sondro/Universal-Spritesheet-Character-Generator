@@ -1,5 +1,4 @@
 document.addEventListener('click', function(ev){
-    console.log(ev);
     if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
         lpcGenerator.updateGui();
     }
@@ -18,7 +17,6 @@ document.addEventListener('click', function(ev){
                 console.log('input[name="' + name + '"]:checked not found');
             }
         }
-        console.log(selection);
         window.location = '#?' + selection
         lpcGenerator.drawCanvas();
     }
@@ -151,7 +149,25 @@ class LpcGenerator {
         label.appendChild(input);
         label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
         li.appendChild(label);
-        parent.appendChild(li);
+        if(spriteset){
+            let validSex = false;
+            //check if there is at least one sprite with valid sex in the set
+            for (let i in spriteset){
+                let sprite = spriteset[i];
+                if(sprite.sex == 0 || sprite.sex & this.getSex()){
+                    validSex = true;
+                }
+            }
+            //only show if it can used for the current sex
+            if(validSex){
+                parent.appendChild(li);
+            }else if(input.checked){
+                //check none if this was checked
+                document.querySelector('input[name="' + mainCat + '"][value="none"]').checked = 'checked';
+            }
+        }else{
+            parent.appendChild(li);
+        }
     }
 
     //generate html list for category recursively
@@ -168,6 +184,8 @@ class LpcGenerator {
             //create empty option
             this.drawSprite(ul, mainCat);
         }
+        //musn't come last since hidden, but selected radios look for this element
+        parent.appendChild(li);
         let sprites = category.getSpritesets();
         for (let i in sprites) {
             this.drawSprite(ul, mainCat, sprites[i])
@@ -175,9 +193,7 @@ class LpcGenerator {
         let children = category.getCategories();
         for (let i in children) {            //TODO: load author JSON
             this.drawCategory(ul, mainCat, children[i])
-        }
-        //delay browser rendering as much as possible
-        parent.appendChild(li);
+        }        
     }
 
     drawCanvas(){
@@ -217,7 +233,6 @@ class LpcGenerator {
             for (let j in lastCat.getSpriteset(name)){
                 //only include spritesets with correct sex
                 let sprite = lastCat.getSpriteset(name)[j];
-                console.log(sprite.sex, this.getSex(), sprite.sex & this.getSex())
                 if(sprite.sex == 0 || sprite.sex & this.getSex()){
                     sprites.push(sprite);
                 }
@@ -358,8 +373,7 @@ class LpcGenerator {
 window.lpcGenerator = new LpcGenerator();
 window.onload=function (){
     lpcGenerator.loadList('spritesheets/');
-    console.log(jHash.val());
     jHash.change(function() {
-        lpcGenerator.drawCanvas();
+        lpcGenerator.updateGui();
     });
 };
