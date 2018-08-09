@@ -4,7 +4,7 @@
   <property name="author" value="redshrike"/>
   <property name="category" value="body"/>
   <property name="layer" type="int" value="0"/>
-  <property name="license" value="GNU GPL 3.0;CC-BY-SA 3.0"/>
+  <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="sex" type="int" value="2"/>
   <property name="url" value="http://lpc.opengameart.org/static/lpc-style-guide/assets.html"/>
  </properties>

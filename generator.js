@@ -5,13 +5,13 @@ document.addEventListener('click', function(ev){
     if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
         //iterate through all categories
         let mainCategories = lpcGenerator.categories.getCategories();
-        selection = "sex=" + document.querySelector('input[name="sex"]:checked').value;
+        selection = 'sex=' + document.querySelector('input[name="sex"]:checked').value;
         for (let i in mainCategories) {
             //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
             name = mainCategories[i].name;
             let radio = document.querySelector('input[name="' + name + '"]:checked');
             if(radio && radio.value != 'none'){
-                selection += "&";
+                selection += '&';
                 selection += name + '=' + radio.value;
             }else{
                 console.log('input[name="' + name + '"]:checked not found');
@@ -219,7 +219,42 @@ class LpcGenerator {
     generateAttribution(){
         let attribution = document.getElementById('attribution');
         let tmpAttr = "";
-
+        let layers = this.getLayers();
+        for (let layer in layers){
+            for (let i in layers[layer]){
+                let sprite = layers[layer][i];
+                tmpAttr += '<a href="' + sprite.img.src + '">' + sprite.img.src.split('/').pop() + '</a>'
+                tmpAttr += ' licensced under '
+                for (let l in sprite.license){
+                    if(l > 0)
+                        tmpAttr += ', ';
+                    tmpAttr += '<a href="'
+                    switch(sprite.license[l].toLowerCase()){
+                        case 'gnu gpl 3.0':
+                            tmpAttr += 'https://www.gnu.org/licenses/gpl-3.0.en.html';
+                            break;
+                        case 'cc by-sa 3.0':
+                            tmpAttr += 'https://creativecommons.org/licenses/by-sa/3.0/';
+                            break;
+                    }
+                    tmpAttr += '">' + sprite.license[l] + '</a>'
+                }
+                tmpAttr += ' as <a href="' + sprite.url + '">' + sprite.title + '</a> by '
+                for (let a in sprite.author){
+                    let author = this.authors[sprite.author[a]];
+                    if(a > 0)
+                        tmpAttr += ', ';
+                    if(!author){
+                        author = new Author(sprite.author[a], '');
+                        tmpAttr += sprite.author[a];
+                    }else{
+                        tmpAttr += '<a href="' + author.url + '">' + author.name + '</a><br>';
+                    }
+                }
+                tmpAttr += '<br>';
+            }
+        }
+        attribution.innerHTML = tmpAttr;
     }
 
     getSex(){
@@ -270,6 +305,7 @@ class LpcGenerator {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
         this.drawCanvas();
+        this.generateAttribution();
     }
 
     //load tileset via AJAX

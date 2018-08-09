@@ -5,7 +5,7 @@
   <property name="category" value="hats"/>
   <property name="incomplete" type="bool" value="false"/>
   <property name="layer" type="int" value="3"/>
-  <property name="license" value="GNU GPL 3.0;CC-BY-SA 3.0"/>
+  <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="sex" type="int" value="1"/>
   <property name="url" value="https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"/>
   <property name="title" value="[LPC] Medieval fantasy character sprites"/>

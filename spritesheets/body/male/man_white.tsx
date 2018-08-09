@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="white" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
-  <property name="author" type="string" value="redshrike"/>
+  <property name="author" value="redshrike"/>
   <property name="category" value="body"/>
   <property name="layer" type="int" value="0"/>
-  <property name="license" value="GNU GPL 3.0;CC-BY-SA 3.0"/>
+  <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="sex" type="int" value="1"/>
+  <property name="title" value="Asset List"/>
   <property name="url" value="http://lpc.opengameart.org/static/lpc-style-guide/assets.html"/>
  </properties>
  <image source="man-white.png" width="832" height="1344"/>
