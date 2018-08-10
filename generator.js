@@ -13,8 +13,6 @@ document.addEventListener('click', function(ev){
             if(radio && radio.value != 'none'){
                 selection += '&';
                 selection += name + '=' + radio.value;
-            }else{
-                console.log('input[name="' + name + '"]:checked not found');
             }
         }
         window.location = '#?' + selection
@@ -28,7 +26,7 @@ function getSelection(){
 
 //class for spritesheets
 class Spritesheet {
-    constructor(name, src, width, height, attributes = {}){
+    constructor(name, src, width, height, attributes = {}, palette){
         this.name = name;
         this.src = src;
         //original title of the asset
@@ -44,7 +42,51 @@ class Spritesheet {
         this.url = attributes['url'];
         this.img = new Image(width, height);
         this.img.src = src;
-        this.img.onload = function(){lpcGenerator.updateGui};
+        let that = this;
+        this.img.onload = function(){
+            if(palette && attributes['palette']){
+                lpcGenerator.loadPalette(palette, function(p){
+                    that.newPalette = p;
+                    that.switchPalette();
+                })
+                lpcGenerator.loadPalette(attributes['palette'], function(p){
+                    that.oldPalette = p;
+                    that.switchPalette();
+                })
+            }
+            lpcGenerator.updateGui;
+        };
+    }
+
+    switchPalette() {
+        if(this.oldPalette && this.newPalette){
+            let can = document.createElement("canvas");
+            can.height = this.img.height;
+            can.width = this.img.width;
+            let ctx = can.getContext('2d');
+            ctx.drawImage(this.img, 0, 0)
+            let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
+            //always choose the smallest size
+            let size = this.oldPalette.length;
+            if(size > this.newPalette.length){
+                size = this.newPalette.length;
+            }
+            for(let i = 0; i < size; i++){
+                // one dimensional array with RGBA
+                for(let j = 0; j < imageData.data.length; j+=4){
+                    if(imageData.data[j] == this.oldPalette[i].red
+                    && imageData.data[j+1] == this.oldPalette[i].green
+                    && imageData.data[j+2] == this.oldPalette[i].blue){
+                        imageData.data[j] = this.newPalette[i].red
+                        imageData.data[j+1] = this.newPalette[i].green
+                        imageData.data[j+2] = this.newPalette[i].blue  
+                    }
+                }
+            }
+            ctx.putImageData(imageData,0,0);
+            this.img = can;
+            lpcGenerator.updateGui;
+        }
     }
 }
 
@@ -223,7 +265,7 @@ class LpcGenerator {
         for (let layer in layers){
             for (let i in layers[layer]){
                 let sprite = layers[layer][i];
-                tmpAttr += '<a href="' + sprite.img.src + '">' + sprite.img.src.split('/').pop() + '</a>'
+                tmpAttr += '<a href="' + sprite.src + '">' + sprite.src.split('/').pop() + '</a>'
                 tmpAttr += ' licensced under '
                 for (let l in sprite.license){
                     if(l > 0)
@@ -309,7 +351,7 @@ class LpcGenerator {
     }
 
     //load tileset via AJAX
-    loadTsx (path) {
+    loadTsx (path, palette, nameOverride) {
         let req = new XMLHttpRequest();
         let dirArr = path.split('/');
         dirArr.pop();
@@ -340,7 +382,7 @@ class LpcGenerator {
             if(attributes['incomplete'] == 'true')
                 return;
             
-            let tmpSprite = new Spritesheet(name, src, width, height, attributes);
+            let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, attributes, palette);
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -389,6 +431,34 @@ class LpcGenerator {
         req.send();
     }
 
+    //load gimp palette .gpl
+    loadPalette (path, callback) {
+        let req = new XMLHttpRequest();
+        req.open('GET', 'palettes/' + path + '.gpl');
+        req.responseType = 'text';
+        req.overrideMimeType('text/plain');
+        let that = this;
+        req.addEventListener('load', function(){
+            let content = this.responseText.split("\n");
+            let colors = [];
+            for(let i in content){
+                // split at spaces
+                // amount of spaces is ignored
+                let line = content[i].trim().split(/\s+/);
+                //ignore everything that isn't a color
+                if(line[0] != 'GIMP' && line[0] != 'Name:' && line[0] != 'Columns:' && line[0][0] != '#' && line.length > 3){
+                    let red = parseInt(line[0], 10);
+                    let green = parseInt(line[1], 10);
+                    let blue = parseInt(line[2], 10);
+                    colors.push({red: red, green: green, blue: blue});
+                }
+            }
+            if(callback)
+                callback(colors);
+        })
+        req.send();
+    }
+
     //load sprite list via AJAX
     loadList (path) {
         let req = new XMLHttpRequest();
@@ -400,12 +470,15 @@ class LpcGenerator {
             //convert to json and iterate through the array
             var list = JSON.parse(this.responseText);
             for (let i in list) {
+                let filePath = path + (list[i].file ? list[i].file : list[i])
                 //check file extensions
-                if (list[i].split('.').pop() == 'tsx') {
-                    that.loadTsx(path + list[i]);
+                if (filePath.split('.').pop() == 'tsx') {
+                    //allow objects for tsx files 
+                    //for palette changing
+                    that.loadTsx(filePath, list[i].palette, list[i].name);
                 }
-                if (list[i][list[i].length - 1] == '/') {
-                    that.loadList(path + list[i]);
+                if (filePath[filePath - 1] == '/') {
+                    that.loadList(filePath);
                 }
                 //ignore exerything else
             }
