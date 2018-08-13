@@ -26,7 +26,7 @@ function getSelection(){
 
 //class for spritesheets
 class Spritesheet {
-    constructor(name, src, width, height, attributes = {}, palette){
+    constructor(name, src, width, height, attributes = {}, palette, loadcallback){
         this.name = name;
         this.src = src;
         //original title of the asset
@@ -43,22 +43,46 @@ class Spritesheet {
         this.img = new Image(width, height);
         this.img.src = src;
         let that = this;
+        //load one after the other
         this.img.onload = function(){
             if(palette && attributes['palette']){
                 lpcGenerator.loadPalette(palette, function(p){
                     that.newPalette = p;
-                    that.switchPalette();
+                    that.switchPalette(loadcallback);
                 })
                 lpcGenerator.loadPalette(attributes['palette'], function(p){
                     that.oldPalette = p;
-                    that.switchPalette();
+                    that.switchPalette(loadcallback);
                 })
+            }else{
+                loadcallback();
             }
             lpcGenerator.updateGui;
         };
     }
 
-    switchPalette() {
+    //use red channel of mask image as alpha channel
+    //white=visible;black=invisible
+    //it is assumed that mask and image have the same size
+    //TODO: not used yet
+    applyMask(mask){
+        //transform images into canvases
+        let can = lpcGenerator.cloneImg(this.img);
+        let mcan = lpcGenerator.cloneImg(mask);
+        let ctx = can.getContext('2d');
+        let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
+        let mimageData = mcan.getContext('2d').getImageData(0, 0, mask.width, mask.height);
+        // one dimensional array with RGBA
+        for(let j = 0; j < imageData.data.length; j+=4){
+            imageData.data[j+3] = mimageData.data[j];
+        }
+        ctx.putImageData(imageData,0,0);
+        this.img = can;
+        lpcGenerator.updateGui;
+    }
+
+    //change color palette of image
+    switchPalette(loadcallback) {
         if(this.oldPalette && this.newPalette){
             let can = document.createElement("canvas");
             can.height = this.img.height;
@@ -86,8 +110,11 @@ class Spritesheet {
             ctx.putImageData(imageData,0,0);
             this.img = can;
             lpcGenerator.updateGui;
+            loadcallback();
         }
     }
+
+
 }
 
 class Category {
@@ -172,6 +199,7 @@ class LpcGenerator {
         let li = document.createElement('li');
         let input = document.createElement('input');
         input.name = mainCat;
+        //assume 'none' option if invalid spriteset
         if(spriteset){
             let categoryHandle = spriteset[0].category.join('.');
             input.value = categoryHandle + '.' + spriteset[0].name;
@@ -191,6 +219,7 @@ class LpcGenerator {
         label.appendChild(input);
         label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
         li.appendChild(label);
+        //assume 'none' option if invalid spriteset
         if(spriteset){
             let validSex = false;
             //check if there is at least one sprite with valid sex in the set
@@ -267,6 +296,7 @@ class LpcGenerator {
                 let sprite = layers[layer][i];
                 tmpAttr += '<a href="' + sprite.src + '">' + sprite.src.split('/').pop() + '</a>'
                 tmpAttr += ' licensced under '
+                //link all licences
                 for (let l in sprite.license){
                     if(l > 0)
                         tmpAttr += ', ';
@@ -282,6 +312,7 @@ class LpcGenerator {
                     tmpAttr += '">' + sprite.license[l] + '</a>'
                 }
                 tmpAttr += ' as <a href="' + sprite.url + '">' + sprite.title + '</a> by '
+                //list all author to profile
                 for (let a in sprite.author){
                     let author = this.authors[sprite.author[a]];
                     if(a > 0)
@@ -325,6 +356,7 @@ class LpcGenerator {
         }}
 
         let layers = [];
+        //place each spritesheet in correct layer
         for(let i = this.layers.min; i <= this.layers.max; i++){
             let newLayer = i + this.layers.min;
             layers[newLayer] = [];
@@ -484,6 +516,15 @@ class LpcGenerator {
             }
         })
         req.send();
+    }
+
+    cloneImg(img){
+        let can = document.createElement("canvas");
+        can.height = img.height;
+        can.width = img.width;
+        let ctx = can.getContext('2d');
+        ctx.drawImage(this.img, 0, 0);
+        return can;
     }
 }
 
