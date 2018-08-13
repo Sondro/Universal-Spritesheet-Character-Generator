@@ -272,6 +272,9 @@ class LpcGenerator {
                         tmpAttr += ', ';
                     tmpAttr += '<a href="'
                     switch(sprite.license[l].toLowerCase()){
+                        case 'gnu gpl 2.0':
+                            tmpAttr += 'https://www.gnu.org/licenses/gpl-2.0.en.html';
+                            break;
                         case 'gnu gpl 3.0':
                             tmpAttr += 'https://www.gnu.org/licenses/gpl-3.0.en.html';
                             break;
@@ -477,7 +480,7 @@ class LpcGenerator {
                     //for palette changing
                     that.loadTsx(filePath, list[i].palette, list[i].name);
                 }
-                if (filePath[filePath - 1] == '/') {
+                if (filePath[filePath.length - 1] == '/') {
                     that.loadList(filePath);
                 }
                 //ignore exerything else
