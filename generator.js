@@ -1,3 +1,42 @@
+function loadXML(path, callback){
+    let req = new XMLHttpRequest();
+    req.addEventListener('load', function() {
+        if(this.status === 200){
+            callback(this.responseXML);
+        }else{
+            console.error('Can\'t load ' + path)
+        }
+    })
+    req.open('GET', path);
+    req.responseType = 'document';
+    req.overrideMimeType('text/xml');
+    req.send();
+}
+
+function loadPlain(path, callback){
+    let req = new XMLHttpRequest();
+    req.addEventListener('load', function() {
+        if(this.status === 200){
+            callback(this.responseText);
+        }else{
+            console.error('Can\'t load ' + path)
+        }
+    })
+    req.open('GET', path);
+    req.responseType = 'text';
+    req.overrideMimeType('text/plain');
+    req.send();
+}
+
+function loadImage(path, width, height, callback){
+    let img = new Image(width, height);
+    img.src = path;
+    img.onload = function(){
+        callback(img);
+    }
+}
+
+
 document.addEventListener('click', function(ev){
     if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
         lpcGenerator.updateGui();
@@ -40,11 +79,10 @@ class Spritesheet {
         this.license = attributes['license'].split(';');
         //url of the source
         this.url = attributes['url'];
-        this.img = new Image(width, height);
-        this.img.src = src;
         let that = this;
         //load one after the other
-        this.img.onload = function(){
+        loadImage(src, width,  height, function(img){
+            that.img = img
             if(palette && attributes['palette']){
                 lpcGenerator.loadPalette(palette, function(p){
                     that.newPalette = p;
@@ -55,10 +93,10 @@ class Spritesheet {
                     that.switchPalette(loadcallback);
                 })
             }else{
-                loadcallback();
+                if(loadcallback)loadcallback();
             }
             lpcGenerator.updateGui;
-        };
+        });
     }
 
     //use red channel of mask image as alpha channel
@@ -110,7 +148,7 @@ class Spritesheet {
             ctx.putImageData(imageData,0,0);
             this.img = can;
             lpcGenerator.updateGui;
-            loadcallback();
+            if(loadcallback)loadcallback();
         }
     }
 
@@ -347,15 +385,17 @@ class LpcGenerator {
             let name = category.pop();
             let lastCat = this.categories;
             for (let j in category) {
+                if(lastCat)
                     lastCat = lastCat.getCategory(category[j]);
             }
-            for (let j in lastCat.getSpriteset(name)){
-                //only include spritesets with correct sex
-                let sprite = lastCat.getSpriteset(name)[j];
-                if(sprite.sex == 0 || sprite.sex & this.getSex()){
-                    sprites.push(sprite);
+            if(lastCat)
+                for (let j in lastCat.getSpriteset(name)){
+                    //only include spritesets with correct sex
+                    let sprite = lastCat.getSpriteset(name)[j];
+                    if(sprite.sex == 0 || sprite.sex & this.getSex()){
+                        sprites.push(sprite);
+                    }
                 }
-            }
         }}
 
         let layers = [];
@@ -387,19 +427,18 @@ class LpcGenerator {
 
     //load tileset via AJAX
     loadTsx (path, palette, nameOverride) {
-        let req = new XMLHttpRequest();
         let dirArr = path.split('/');
         dirArr.pop();
         let dirPath = dirArr.join('/');
         let that = this;
-        req.addEventListener('load', function() {
-            let tileset = this.responseXML.getElementsByTagName('tileset')[0];
-            let image = this.responseXML.getElementsByTagName('image')[0];
+        loadXML(path, function(response) {
+            let tileset = response.getElementsByTagName('tileset')[0];
+            let image = response.getElementsByTagName('image')[0];
             let name = tileset.getAttribute('name');
             let src = dirPath + '/' + image.getAttribute('source');
             let height = image.getAttribute('height');
             let width = image.getAttribute('width');
-            let properties = this.responseXML.getElementsByTagName('properties')[0];
+            let properties = response.getElementsByTagName('properties')[0];
             //initialized
             let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
             //parse all custom properties
@@ -443,38 +482,25 @@ class LpcGenerator {
             }
             that.updateGui();
         })
-        req.open('GET', path);
-        req.responseType = 'document';
-        req.overrideMimeType('text/xml');
-        req.send();
     }
 
     //load author via AJAX
     loadAuthor (name, sprite) {
-        let req = new XMLHttpRequest();
-        req.open('GET', 'authors/' + name + '.json');
-        req.responseType = 'text';
-        req.overrideMimeType('text/json');
         let that = this;
-        req.addEventListener('load', function(){
+        loadPlain('authors/' + name + '.json', function(response){
             //convert to json and iterate through the array
-            var author = JSON.parse(this.responseText);
+            var author = JSON.parse(response);
             if(!that.authors[name])
                 that.authors[name] = new Author(author.name, author.url);
             that.authors[name].addSprite(sprite);
         })
-        req.send();
     }
 
     //load gimp palette .gpl
     loadPalette (path, callback) {
-        let req = new XMLHttpRequest();
-        req.open('GET', 'palettes/' + path + '.gpl');
-        req.responseType = 'text';
-        req.overrideMimeType('text/plain');
         let that = this;
-        req.addEventListener('load', function(){
-            let content = this.responseText.split("\n");
+        loadPlain('palettes/' + path + '.gpl', function(response){
+            let content = response.split("\n");
             let colors = [];
             for(let i in content){
                 // split at spaces
@@ -491,7 +517,6 @@ class LpcGenerator {
             if(callback)
                 callback(colors);
         })
-        req.send();
     }
 
     //load sprite list via AJAX
