@@ -1,42 +1,3 @@
-function loadXML(path, callback){
-    let req = new XMLHttpRequest();
-    req.addEventListener('load', function() {
-        if(this.status === 200){
-            callback(this.responseXML);
-        }else{
-            console.error('Can\'t load ' + path)
-        }
-    })
-    req.open('GET', path);
-    req.responseType = 'document';
-    req.overrideMimeType('text/xml');
-    req.send();
-}
-
-function loadPlain(path, callback){
-    let req = new XMLHttpRequest();
-    req.addEventListener('load', function() {
-        if(this.status === 200){
-            callback(this.responseText);
-        }else{
-            console.error('Can\'t load ' + path)
-        }
-    })
-    req.open('GET', path);
-    req.responseType = 'text';
-    req.overrideMimeType('text/plain');
-    req.send();
-}
-
-function loadImage(path, width, height, callback){
-    let img = new Image(width, height);
-    img.src = path;
-    img.onload = function(){
-        callback(img);
-    }
-}
-
-
 document.addEventListener('click', function(ev){
     if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
         lpcGenerator.updateGui();
@@ -61,168 +22,6 @@ document.addEventListener('click', function(ev){
 
 function getSelection(){
     
-}
-
-//class for spritesheets
-class Spritesheet {
-    constructor(name, src, width, height, attributes = {}, palette, loadcallback){
-        this.name = name;
-        this.src = src;
-        //original title of the asset
-        this.title = attributes['title'];
-        this.layer = attributes['layer'];
-        this.category = attributes['category'].split(';');
-        //author names corresponding to authors/<name>.json
-        this.author = attributes['author'].split(';');
-        //1: male, 3: female etc.
-        this.sex = attributes['sex'];
-        this.license = attributes['license'].split(';');
-        //url of the source
-        this.url = attributes['url'];
-        let that = this;
-        //load one after the other
-        loadImage(src, width,  height, function(img){
-            that.img = img
-            if(palette && attributes['palette']){
-                lpcGenerator.loadPalette(palette, function(p){
-                    that.newPalette = p;
-                    that.switchPalette(loadcallback);
-                })
-                lpcGenerator.loadPalette(attributes['palette'], function(p){
-                    that.oldPalette = p;
-                    that.switchPalette(loadcallback);
-                })
-            }else{
-                if(loadcallback)loadcallback();
-            }
-            lpcGenerator.updateGui;
-        });
-    }
-
-    //use red channel of mask image as alpha channel
-    //white=visible;black=invisible
-    //it is assumed that mask and image have the same size
-    //TODO: not used yet
-    applyMask(mask){
-        //transform images into canvases
-        let can = lpcGenerator.cloneImg(this.img);
-        let mcan = lpcGenerator.cloneImg(mask);
-        let ctx = can.getContext('2d');
-        let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
-        let mimageData = mcan.getContext('2d').getImageData(0, 0, mask.width, mask.height);
-        // one dimensional array with RGBA
-        for(let j = 0; j < imageData.data.length; j+=4){
-            imageData.data[j+3] = mimageData.data[j];
-        }
-        ctx.putImageData(imageData,0,0);
-        this.img = can;
-        lpcGenerator.updateGui;
-    }
-
-    //change color palette of image
-    switchPalette(loadcallback) {
-        if(this.oldPalette && this.newPalette){
-            let can = document.createElement("canvas");
-            can.height = this.img.height;
-            can.width = this.img.width;
-            let ctx = can.getContext('2d');
-            ctx.drawImage(this.img, 0, 0)
-            let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
-            //always choose the smallest size
-            let size = this.oldPalette.length;
-            if(size > this.newPalette.length){
-                size = this.newPalette.length;
-            }
-            for(let i = 0; i < size; i++){
-                // one dimensional array with RGBA
-                for(let j = 0; j < imageData.data.length; j+=4){
-                    if(imageData.data[j] == this.oldPalette[i].red
-                    && imageData.data[j+1] == this.oldPalette[i].green
-                    && imageData.data[j+2] == this.oldPalette[i].blue){
-                        imageData.data[j] = this.newPalette[i].red
-                        imageData.data[j+1] = this.newPalette[i].green
-                        imageData.data[j+2] = this.newPalette[i].blue  
-                    }
-                }
-            }
-            ctx.putImageData(imageData,0,0);
-            this.img = can;
-            lpcGenerator.updateGui;
-            if(loadcallback)loadcallback();
-        }
-    }
-
-
-}
-
-class Category {
-    constructor(name) {
-        this.name = name;
-        this.subcategories = [];
-        this.sprites = [];
-    }
-
-    hasCategory(name) {
-        for (let i in this.subcategories)
-            if (this.subcategories[i].name == name)
-                return true;
-        return false;
-    }
-
-    getCategory(name) {
-        for (let i in this.subcategories)
-            if (this.subcategories[i].name == name)
-                return this.subcategories[i];
-    }
-
-    getCategories() {
-        return this.subcategories;
-    }
-
-    addCategory(name) {
-        this.subcategories.push(new Category(name));
-    }
-
-    hasSpriteset(name) {
-        for (let i in this.sprites)
-            if (this.sprites[i][0].name == name)
-                return true;
-        return false;
-    }
-
-    getSpriteset(name) {
-        for (let i in this.sprites)
-            if (this.sprites[i][0].name == name)
-                return this.sprites[i];
-    }
-
-    getSpritesets() {
-        return this.sprites;
-    }
-
-    //add to existing set or create new one
-    addSprite(sprite) {
-        for (let i in this.sprites){
-            if (this.sprites[i][0].name == sprite.name){
-                this.sprites[i].push(sprite);
-                return;
-            }
-        }
-        this.sprites.push([sprite]);
-    }
-}
-
-class Author {
-
-    constructor(name, url){
-        this.name = name;
-        this.url = url;
-        this.sprites = []
-    }
-
-    addSprite(ss){
-        this.sprites.push(ss);
-    }
 }
 
 class LpcGenerator {
@@ -431,7 +230,7 @@ class LpcGenerator {
         dirArr.pop();
         let dirPath = dirArr.join('/');
         let that = this;
-        loadXML(path, function(response) {
+        tools.loadXML(path, function(response) {
             let tileset = response.getElementsByTagName('tileset')[0];
             let image = response.getElementsByTagName('image')[0];
             let name = tileset.getAttribute('name');
@@ -487,7 +286,7 @@ class LpcGenerator {
     //load author via AJAX
     loadAuthor (name, sprite) {
         let that = this;
-        loadPlain('authors/' + name + '.json', function(response){
+        tools.loadPlain('authors/' + name + '.json', function(response){
             //convert to json and iterate through the array
             var author = JSON.parse(response);
             if(!that.authors[name])
@@ -499,7 +298,7 @@ class LpcGenerator {
     //load gimp palette .gpl
     loadPalette (path, callback) {
         let that = this;
-        loadPlain('palettes/' + path + '.gpl', function(response){
+        tools.loadPlain('palettes/' + path + '.gpl', function(response){
             let content = response.split("\n");
             let colors = [];
             for(let i in content){
@@ -521,14 +320,10 @@ class LpcGenerator {
 
     //load sprite list via AJAX
     loadList (path) {
-        let req = new XMLHttpRequest();
-        req.open('GET', path + 'list.json');
-        req.responseType = 'text';
-        req.overrideMimeType('text/json');
         let that = this;
-        req.addEventListener('load', function(){
+        tools.loadPlain(path + 'list.json', function(response){
             //convert to json and iterate through the array
-            var list = JSON.parse(this.responseText);
+            var list = JSON.parse(response);
             for (let i in list) {
                 let filePath = path + (list[i].file ? list[i].file : list[i])
                 //check file extensions
@@ -543,16 +338,6 @@ class LpcGenerator {
                 //ignore exerything else
             }
         })
-        req.send();
-    }
-
-    cloneImg(img){
-        let can = document.createElement("canvas");
-        can.height = img.height;
-        can.width = img.width;
-        let ctx = can.getContext('2d');
-        ctx.drawImage(this.img, 0, 0);
-        return can;
     }
 }
 
