@@ -11,5 +11,11 @@
             this.sprites.push(ss);
         }
     }
-    this['Author'] = Author;
+    if(typeof module !== 'undefined'){
+        //node
+        module.exports = Author;
+    }else{
+        // browser
+        this['Author'] = Author;
+    }
 }());

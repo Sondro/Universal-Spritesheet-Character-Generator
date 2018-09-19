@@ -89,5 +89,11 @@
 
 
     }
-    this['Spritesheet'] = Spritesheet;
+    if(typeof module !== 'undefined'){
+        //node
+        module.exports = Spritesheet;
+    }else{
+        // browser
+        this['Spritesheet'] = Spritesheet;
+    }
 }());

@@ -55,5 +55,11 @@
             this.sprites.push([sprite]);
         }
     }
-    this['Category'] = Category;
+    if(typeof module !== 'undefined'){
+        //node
+        module.exports = Category
+    }else{
+        // browser
+        this['Category'] = Category;
+    }
 }());
