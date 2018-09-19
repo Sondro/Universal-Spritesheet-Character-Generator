@@ -49,5 +49,7 @@
     "belt/leather/male/leather_male.tsx",
     "head/caps/male/leather_cap_male.tsx",
     "legs/skirt/male/robe_skirt_male.tsx",
-    "feet/shoes/male/brown_shoes_male.tsx"
+    "feet/shoes/male/brown_shoes_male.tsx",
+    "head/helms/",
+    "torso/"
 ]

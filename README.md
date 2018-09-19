@@ -5,28 +5,13 @@ Based on [Universal LPC Spritesheet](https://github.com/jrconway3/Universal-LPC-
 
 Try it out [here](https://basxto.github.io/Universal-LPC-Spritesheet-Character-Generator/).
 
-The project you are looking now is an expansion on the above mentioned projects. I try to include all LPC created art up to now.
+### Goals
 
-### Run
-
-To run this project, just clone the repo and open ``index.html`` in your browser of choice.
-
-### Caution
-
-This is not an example of a perfectly coded project, and it does have bugs.
-In my current project I am using the generator to create a vast amount of awesome different characters, and the results are beautiful.
-
-Still, feel free to enhance the code where you like, but for now, I focus on just adding content.
-
-### Status
-
-Support still working on:
-
-- [Teens](https://opengameart.org/content/lpc-teen-unisex-base-clothes)
-- [Triumph](https://opengameart.org/content/lpc-major-triumph)
-- [Skorpios](https://opengameart.org/content/lpc-skorpios-scifi-sprite-pack)
+* Simplify attribution
+* Find original uploads
+* Use original uploads without edits
+* Switch color paletts
+* Preprocess in browser
 
 ### Examples
-![alt text](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/ex1.png)
-![alt text](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/ex2.png)
-![alt text](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator/blob/master/ex3.png)
+https://basxto.github.io/Universal-LPC-Spritesheet-Character-Generator/#?sex=1&body=body.light&clothes=clothes.long%20sleeve%20shirt.brown&legs=legs.robe%20skirt&belts=belts.leather%20belt&hats=hats.leather%20cap&shoes=shoes.brown%20shoes

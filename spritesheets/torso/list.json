@@ -1,0 +1,26 @@
+[
+    "plate/chest_male.tsx",
+    {
+    	"file": "plate/chest_male.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "plate/Male_legionplate_steel.tsx",
+    {
+    	"file": "plate/Male_legionplate_steel.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "plate/chest_female.tsx",
+    {
+    	"file": "plate/chest_female.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "plate/Female_legionplate_steel.tsx",
+    {
+    	"file": "plate/Female_legionplate_steel.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    }
+]

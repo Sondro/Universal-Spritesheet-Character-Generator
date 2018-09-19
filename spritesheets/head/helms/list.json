@@ -1,0 +1,26 @@
+[
+    "male/metal_helm_male.tsx",
+    {
+    	"file": "male/metal_helm_male.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "male/Male_legion1helmet_steel.tsx",
+    {
+    	"file": "male/Male_legion1helmet_steel.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "female/metal_helm_female.tsx",
+    {
+    	"file": "female/metal_helm_female.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    },
+    "female/Female_legion1helmet_steel.tsx",
+    {
+    	"file": "female/Female_legion1helmet_steel.tsx",
+    	"name": "gold",
+    	"palette": "metal/gold"
+    }
+]
