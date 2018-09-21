@@ -172,3 +172,7 @@ li.hasPreview>canvas {
 a {
     border: 0;
 }
+
+.hidden {
+    display: none;
+}

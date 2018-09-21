@@ -12,11 +12,14 @@
             this.categories = new Category('all');
             this.authors = {};
             this.animations = [];
-            this.layers = {min: 0, max: 0}
+            this.layers = {min: 0, max: 0};
+            this.pending = 0;
+            this.onLoad = function(){}
         }
 
         //load tileset via AJAX
         loadTsx (path, palette, nameOverride) {
+            this.pending++;
             let dirArr = path.split('/');
             dirArr.pop();
             let dirPath = dirArr.join('/');
@@ -71,11 +74,13 @@
                 }
                 //TODO: find better way
                 //that.updateGui();
+                that.decreasePending();
             })
         }
 
         //load author via AJAX
         loadAuthor (name, sprite) {
+            this.pending++;
             let that = this;
             tools.loadPlain('authors/' + name + '.json', function(response){
                 //convert to json and iterate through the array
@@ -83,11 +88,13 @@
                 if(!that.authors[name])
                     that.authors[name] = new Author(author.name, author.url);
                 that.authors[name].addSprite(sprite);
+                that.decreasePending();
             })
         }
 
         //load gimp palette .gpl
         loadPalette (path, callback) {
+            this.pending++;
             let that = this;
             tools.loadPlain('palettes/' + path + '.gpl', function(response){
                 let content = response.split("\n");
@@ -106,11 +113,13 @@
                 }
                 if(callback)
                     callback(colors);
+                that.decreasePending();
             })
         }
 
         //load sprite list via AJAX
         loadList (path) {
+            this.pending++;
             let that = this;
             tools.loadPlain(path + 'list.json', function(response){
                 //convert to json and iterate through the array
@@ -128,7 +137,14 @@
                     }
                     //ignore exerything else
                 }
+                that.decreasePending();
             })
+        }
+
+        decreasePending(){
+            this.pending--;
+            if(this.pending <= 0)
+                this.onLoad();
         }
     }
     

@@ -185,6 +185,12 @@ class LpcGenerator {
 
 window.onload=function (){
     lpcGenerator = new LpcGenerator(new Character(jHash.val()));
+    assetManager.onLoad = function(){
+        lpcGenerator.character.setSelection(jHash.val());
+        lpcGenerator.updateGui();
+        document.getElementById('loading').className = 'hidden';
+        document.getElementById('generator').className = '';
+    }
     assetManager.loadList('spritesheets/');
     lpcGenerator.updateGui();
     jHash.change(function() {

@@ -12,7 +12,11 @@
             // node
             // TODO: return xml dom
             fs.readFile(__dirname + '/../' + path, 'utf8', function(err, data){
-                callback(new DOMParser().parseFromString(data));
+                if(!err){
+                    callback(new DOMParser().parseFromString(data));
+                }else{
+                    console.error('Can\'t load ' + path)
+                }
             });
         }else{
             // browser
@@ -37,6 +41,8 @@
             fs.readFile(__dirname + '/../' + path, 'utf8', function(err, data){
                 if(!err){
                     callback(data);
+                }else{
+                    console.error('Can\'t load ' + path)
                 }
             });
         }else{
