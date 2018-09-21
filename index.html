@@ -15,6 +15,13 @@
   <script type="text/javascript" src="js/character.js"></script>
   <script type="text/javascript" src="libs/jhash-2.1.js"></script>
   <script type="text/javascript" src="generator.js"></script>
+  <script type="text/javascript">
+    window.onload=function (){
+      assetManager.setBaseDir('lpc/');
+      lpcGenerator = new LpcGenerator(new Character(jHash.val()));
+      lpcGenerator.onLoad();
+    };
+  </script>
 </head>
 <body>
   <header>

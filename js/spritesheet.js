@@ -6,9 +6,9 @@
         assetManager = {'loadPalette': function(){}}
     }
     class Spritesheet {
-        constructor(name, src, width, height, attributes = {}, palette, loadcallback){
+        constructor(name, src, width, height, attributes = {}, palette, loadcallback, assetManager){
             this.name = name;
-            this.src = src;
+            this.src = assetManager.baseDir + src;
             //original title of the asset
             this.title = attributes['title'];
             this.layer = attributes['layer'];
@@ -22,7 +22,7 @@
             this.url = attributes['url'];
             let that = this;
             //load one after the other
-            tools.loadImage(src, width,  height, function(img){
+            tools.loadImage(this.src, width,  height, function(img){
                 that.img = img
                 if(palette && attributes['palette']){
                     assetManager.loadPalette(palette, function(p){

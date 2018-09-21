@@ -5,17 +5,18 @@
         Canvas = require('canvas');
         Image = Canvas.Image;
         DOMParser = require('xmldom').DOMParser;
+        path = require('path');
     }
 
-    exports.loadXML = function(path, callback){
+    exports.loadXML = function(file, callback){
         if (typeof window === 'undefined'){
             // node
             // TODO: return xml dom
-            fs.readFile(__dirname + '/../' + path, 'utf8', function(err, data){
+            fs.readFile(path.join(process.cwd(),file), 'utf8', function(err, data){
                 if(!err){
                     callback(new DOMParser().parseFromString(data));
                 }else{
-                    console.error('Can\'t load XML file ' + path)
+                    console.error('Can\'t load XML file ' + path.join(process.cwd(),file))
                 }
             });
         }else{
@@ -25,24 +26,24 @@
                 if(this.status === 200){
                     callback(this.responseXML);
                 }else{
-                    console.error('Can\'t load ' + path)
+                    console.error('Can\'t load XML file ' + file)
                 }
             })
-            req.open('GET', path);
+            req.open('GET', file);
             req.responseType = 'document';
             req.overrideMimeType('text/xml');
             req.send();
         }
     }
     
-    exports.loadPlain = function(path, callback){
+    exports.loadPlain = function(file, callback){
         if (typeof window === 'undefined'){
             // node
-            fs.readFile(__dirname + '/../' + path, 'utf8', function(err, data){
+            fs.readFile(path.join(process.cwd(),file), 'utf8', function(err, data){
                 if(!err){
                     callback(data);
                 }else{
-                    console.error('Can\'t load ' + path)
+                    console.error('Can\'t load ' + path.join(process.cwd(),file))
                 }
             });
         }else{
@@ -52,32 +53,32 @@
                 if(this.status === 200){
                     callback(this.responseText);
                 }else{
-                    console.error('Can\'t load ' + path)
+                    console.error('Can\'t load ' + file)
                 }
             })
-            req.open('GET', path);
+            req.open('GET', file);
             req.responseType = 'text';
             req.overrideMimeType('text/plain');
             req.send();
         }
     }
     
-    exports.loadImage = function(path, width, height, callback){
+    exports.loadImage = function(file, width, height, callback){
         if (typeof window === 'undefined'){
             // node
-            fs.readFile(__dirname + '/../' + path, function(err, squid){
+            fs.readFile(path.join(process.cwd(),file), function(err, squid){
                 if(!err){
                     img = new Image;
                     img.src = squid;
                     callback(img);
                 }else{
-                    console.error('Can\'t load image ' + path)
+                    console.error('Can\'t load image ' + path.join(process.cwd(),file))
                 }
             });
         }else{
             // browser
             let img = new Image(width, height);
-            img.src = path;
+            img.src = file;
             img.onload = function(){
                 callback(img);
             }

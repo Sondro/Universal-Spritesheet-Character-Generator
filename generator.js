@@ -1,25 +1,3 @@
-document.addEventListener('click', function(ev){
-    if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
-        lpcGenerator.updateGui();
-    }
-    if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
-        //iterate through all categories
-        let mainCategories = assetManager.categories.getCategories();
-        selection = 'sex=' + document.querySelector('input[name="sex"]:checked').value;
-        for (let i in mainCategories) {
-            //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
-            name = mainCategories[i].name;
-            let radio = document.querySelector('input[name="' + name + '"]:checked');
-            if(radio && radio.value != 'none'){
-                selection += '&';
-                selection += name + '=' + radio.value;
-            }
-        }
-        window.location = '#?' + selection
-        lpcGenerator.drawCanvas();
-    }
-});
-
 class LpcGenerator {
     constructor(character){
         this.character = character;
@@ -172,24 +150,45 @@ class LpcGenerator {
         this.generateAttribution();
     }
 
-  
+    onLoad(){
+        document.getElementById('loading').innerText = 'loading...';
+        document.addEventListener('click', function(ev){
+            if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
+                lpcGenerator.updateGui();
+            }
+            if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
+                //iterate through all categories
+                let mainCategories = assetManager.categories.getCategories();
+                let selection = 'sex=' + document.querySelector('input[name="sex"]:checked').value;
+                for (let i in mainCategories) {
+                    //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
+                    name = mainCategories[i].name;
+                    let radio = document.querySelector('input[name="' + name + '"]:checked');
+                    if(radio && radio.value != 'none'){
+                        selection += '&';
+                        selection += name + '=' + radio.value;
+                    }
+                }
+                window.location = '#?' + selection
+                lpcGenerator.drawCanvas();
+            }
+        });
+        lpcGenerator = new LpcGenerator(new Character(jHash.val()));
+        assetManager.onLoad = function(){
+            lpcGenerator.character.setSelection(jHash.val());
+            lpcGenerator.updateGui();
+            document.getElementById('loading').className = 'hidden';
+            document.getElementById('generator').className = '';
+        }
+        assetManager.onProgress = function(pending, allFiles, lastPath){
+            document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
+        }
+        assetManager.setBaseDir('lpc/')
+        lpcGenerator.updateGui();
+        jHash.change(function() {
+            lpcGenerator.character.setSelection(jHash.val());
+            lpcGenerator.updateGui();
+        });
+        assetManager.loadList('spritesheets/');
+    }
 }
-
-window.onload=function (){
-    lpcGenerator = new LpcGenerator(new Character(jHash.val()));
-    assetManager.onLoad = function(){
-        lpcGenerator.character.setSelection(jHash.val());
-        lpcGenerator.updateGui();
-        document.getElementById('loading').className = 'hidden';
-        document.getElementById('generator').className = '';
-    }
-    assetManager.onProgress = function(pending, allFiles, lastPath){
-        document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')'
-    }
-    assetManager.loadList('spritesheets/');
-    lpcGenerator.updateGui();
-    jHash.change(function() {
-        lpcGenerator.character.setSelection(jHash.val());
-        lpcGenerator.updateGui();
-    });
-};

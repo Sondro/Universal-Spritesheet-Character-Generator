@@ -19,6 +19,7 @@
             this.allFiles = 0;
             this.onLoad = function(){}
             this.onProgress = function(pending, allFiles, lastPath){}
+            this.baseDir = './'
         }
 
         //load tileset via AJAX
@@ -28,7 +29,8 @@
             dirArr.pop();
             let dirPath = dirArr.join('/');
             let that = this;
-            tools.loadXML(path, function(response) {
+            let fullPath = this.baseDir + path
+            tools.loadXML(fullPath, function(response) {
                 let tileset = response.getElementsByTagName('tileset')[0];
                 let image = response.getElementsByTagName('image')[0];
                 let name = tileset.getAttribute('name');
@@ -55,7 +57,7 @@
                 //don't load incomplete spritesheets
                 if(attributes['incomplete'] == 'true')
                     return;
-                let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, attributes, palette);
+                let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, attributes, palette, undefined, that);
                 //manage categories
                 let categories = attributes['category'].split(';');
                 //go through all categories and add them if neccessary
@@ -87,7 +89,7 @@
         loadAuthor (name, sprite) {
             this.increasePending();
             let that = this;
-            let fullPath = 'authors/' + name + '.json'
+            let fullPath = this.baseDir + 'authors/' + name + '.json'
             tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var author = JSON.parse(response);
@@ -102,7 +104,7 @@
         loadPalette (path, callback) {
             this.increasePending();
             let that = this;
-            let fullPath = 'palettes/' + path + '.gpl';
+            let fullPath = this.baseDir + 'palettes/' + path + '.gpl';
             tools.loadPlain(fullPath, function(response){
                 let content = response.split("\n");
                 let colors = [];
@@ -128,7 +130,7 @@
         loadList (path) {
             this.increasePending();
             let that = this;
-            let fullPath = path + 'list.json';
+            let fullPath = this.baseDir + path + 'list.json';
             tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var list = JSON.parse(response);
@@ -147,6 +149,10 @@
                 }
                 that.decreasePending(fullPath);
             })
+        }
+
+        setBaseDir(baseDir){
+            this.baseDir = baseDir;
         }
 
         increasePending(){
