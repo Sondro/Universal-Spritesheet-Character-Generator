@@ -14,12 +14,14 @@
             this.animations = [];
             this.layers = {min: 0, max: 0};
             this.pending = 0;
+            this.allFiles = 0;
             this.onLoad = function(){}
+            this.onProgress = function(pending, allFiles, lastPath){}
         }
 
         //load tileset via AJAX
         loadTsx (path, palette, nameOverride) {
-            this.pending++;
+            this.increasePending();
             let dirArr = path.split('/');
             dirArr.pop();
             let dirPath = dirArr.join('/');
@@ -74,29 +76,31 @@
                 }
                 //TODO: find better way
                 //that.updateGui();
-                that.decreasePending();
+                that.decreasePending(path);
             })
         }
 
         //load author via AJAX
         loadAuthor (name, sprite) {
-            this.pending++;
+            this.increasePending();
             let that = this;
-            tools.loadPlain('authors/' + name + '.json', function(response){
+            let fullPath = 'authors/' + name + '.json'
+            tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var author = JSON.parse(response);
                 if(!that.authors[name])
                     that.authors[name] = new Author(author.name, author.url);
                 that.authors[name].addSprite(sprite);
-                that.decreasePending();
+                that.decreasePending(fullPath);
             })
         }
 
         //load gimp palette .gpl
         loadPalette (path, callback) {
-            this.pending++;
+            this.increasePending();
             let that = this;
-            tools.loadPlain('palettes/' + path + '.gpl', function(response){
+            let fullPath = 'palettes/' + path + '.gpl';
+            tools.loadPlain(fullPath, function(response){
                 let content = response.split("\n");
                 let colors = [];
                 for(let i in content){
@@ -113,15 +117,16 @@
                 }
                 if(callback)
                     callback(colors);
-                that.decreasePending();
+                that.decreasePending(fullPath);
             })
         }
 
         //load sprite list via AJAX
         loadList (path) {
-            this.pending++;
+            this.increasePending();
             let that = this;
-            tools.loadPlain(path + 'list.json', function(response){
+            let fullPath = path + 'list.json';
+            tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var list = JSON.parse(response);
                 for (let i in list) {
@@ -137,12 +142,18 @@
                     }
                     //ignore exerything else
                 }
-                that.decreasePending();
+                that.decreasePending(fullPath);
             })
         }
 
-        decreasePending(){
+        increasePending(){
+            this.pending++;
+            this.allFiles++;
+        }
+
+        decreasePending(lastPath){
             this.pending--;
+            this.onProgress(this.pending, this.allFiles, lastPath)
             if(this.pending <= 0)
                 this.onLoad();
         }

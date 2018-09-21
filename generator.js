@@ -191,6 +191,9 @@ window.onload=function (){
         document.getElementById('loading').className = 'hidden';
         document.getElementById('generator').className = '';
     }
+    assetManager.onProgress = function(pending, allFiles, lastPath){
+        document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')'
+    }
     assetManager.loadList('spritesheets/');
     lpcGenerator.updateGui();
     jHash.change(function() {

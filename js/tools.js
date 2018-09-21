@@ -15,7 +15,7 @@
                 if(!err){
                     callback(new DOMParser().parseFromString(data));
                 }else{
-                    console.error('Can\'t load ' + path)
+                    console.error('Can\'t load XML file ' + path)
                 }
             });
         }else{
@@ -66,10 +66,13 @@
         if (typeof window === 'undefined'){
             // node
             fs.readFile(__dirname + '/../' + path, function(err, squid){
-                if (err) throw err;
-                img = new Image;
-                img.src = squid;
-                callback(img);
+                if(!err){
+                    img = new Image;
+                    img.src = squid;
+                    callback(img);
+                }else{
+                    console.error('Can\'t load image ' + path)
+                }
             });
         }else{
             // browser
