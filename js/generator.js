@@ -90,50 +90,9 @@ class LpcGenerator {
         ctx.drawImage(this.character.draw(), 0, 0);
     }
 
-    generateAttribution(){
+    generateAttribution(syntax){
         let attribution = document.getElementById('attribution');
-        let tmpAttr = "";
-        let layers = this.character.getLayers().layers;
-        for (let layer in layers){
-            for (let i in layers[layer]){
-                let sprite = layers[layer][i];
-                tmpAttr += '<a href="' + sprite.src + '">' + sprite.src.split('/').pop() + '</a>'
-                tmpAttr += ' licensced under '
-                //link all licences
-                for (let l in sprite.license){
-                    if(l > 0)
-                        tmpAttr += ', ';
-                    tmpAttr += '<a href="'
-                    switch(sprite.license[l].toLowerCase()){
-                        case 'gnu gpl 2.0':
-                            tmpAttr += 'https://www.gnu.org/licenses/gpl-2.0.en.html';
-                            break;
-                        case 'gnu gpl 3.0':
-                            tmpAttr += 'https://www.gnu.org/licenses/gpl-3.0.en.html';
-                            break;
-                        case 'cc by-sa 3.0':
-                            tmpAttr += 'https://creativecommons.org/licenses/by-sa/3.0/';
-                            break;
-                    }
-                    tmpAttr += '">' + sprite.license[l] + '</a>'
-                }
-                tmpAttr += ' as <a href="' + sprite.url + '">' + sprite.title + '</a> by '
-                //list all author to profile
-                for (let a in sprite.author){
-                    let author = assetManager.authors[sprite.author[a]];
-                    if(a > 0)
-                        tmpAttr += ', ';
-                    if(!author){
-                        author = new Author(sprite.author[a], '');
-                        tmpAttr += sprite.author[a];
-                    }else{
-                        tmpAttr += '<a href="' + author.url + '">' + author.name + '</a><br>';
-                    }
-                }
-                tmpAttr += '<br>';
-            }
-        }
-        attribution.innerHTML = tmpAttr;
+        attribution.innerHTML = this.character.generateAttribution('html');
     }
 
     updateGui(){
@@ -183,7 +142,6 @@ class LpcGenerator {
         assetManager.onProgress = function(pending, allFiles, lastPath){
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
-        assetManager.setBaseDir('lpc/')
         lpcGenerator.updateGui();
         jHash.change(function() {
             lpcGenerator.character.setSelection(jHash.val());
