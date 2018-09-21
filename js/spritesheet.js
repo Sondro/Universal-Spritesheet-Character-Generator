@@ -1,4 +1,10 @@
 (function(){
+    if (typeof window === 'undefined'){
+        // imports for node
+        //AssetManager = require('./assetmanager')
+        //TODO: mutual require does not work
+        assetManager = {'loadPalette': function(){}}
+    }
     class Spritesheet {
         constructor(name, src, width, height, attributes = {}, palette, loadcallback){
             this.name = name;
@@ -19,18 +25,18 @@
             tools.loadImage(src, width,  height, function(img){
                 that.img = img
                 if(palette && attributes['palette']){
-                    lpcGenerator.loadPalette(palette, function(p){
+                    assetManager.loadPalette(palette, function(p){
                         that.newPalette = p;
                         that.switchPalette(loadcallback);
                     })
-                    lpcGenerator.loadPalette(attributes['palette'], function(p){
+                    assetManager.loadPalette(attributes['palette'], function(p){
                         that.oldPalette = p;
                         that.switchPalette(loadcallback);
                     })
                 }else{
                     if(loadcallback)loadcallback();
                 }
-                lpcGenerator.updateGui;
+                //AssetManager.updateGui;
             });
         }
 
@@ -51,7 +57,7 @@
             }
             ctx.putImageData(imageData,0,0);
             this.img = can;
-            lpcGenerator.updateGui;
+            //lpcGenerator.updateGui;
         }
 
         //change color palette of image
@@ -82,7 +88,7 @@
                 }
                 ctx.putImageData(imageData,0,0);
                 this.img = can;
-                lpcGenerator.updateGui;
+                //lpcGenerator.updateGui;
                 if(loadcallback)loadcallback();
             }
         }

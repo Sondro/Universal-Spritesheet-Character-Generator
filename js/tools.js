@@ -35,7 +35,9 @@
         if (typeof window === 'undefined'){
             // node
             fs.readFile(__dirname + '/../' + path, 'utf8', function(err, data){
-                callback(data);
+                if(!err){
+                    callback(data);
+                }
             });
         }else{
             // browser
@@ -73,15 +75,20 @@
         }
     }
 
-    exports.cloneImg = function(img){
+    exports.createCanvas = function(height, width){
         let can
         if (typeof document !== 'undefined'){
             can = document.createElement("canvas");
-            can.height = img.height;
-            can.width = img.width;
+            can.height = height;
+            can.width = width;
         }else{
-            can = new Canvas(img.height, img.width)
+            can = new Canvas(height, width)
         }
+        return can;
+    }
+
+    exports.cloneImg = function(img){
+        let can = exports.newCanvas(img.height, img.width);
         let ctx = can.getContext('2d');
         ctx.drawImage(img, 0, 0);
         return can;
