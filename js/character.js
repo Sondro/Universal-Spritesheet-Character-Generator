@@ -48,11 +48,15 @@
             layers[newLayer] = [];
             for(let j in sprites){
                 if(sprites[j].layer == i){
-                    layers[newLayer].push(sprites[j])
-                    if(sprites[j].img.width > width)
-                        width = sprites[j].img.width
-                    if(sprites[j].img.height > height)
-                        height = sprites[j].img.height
+                    if(sprites[j].img){
+                        layers[newLayer].push(sprites[j])
+                        if(sprites[j].img.width > width)
+                            width = sprites[j].img.width
+                        if(sprites[j].img.height > height)
+                            height = sprites[j].img.height
+                    }else{
+                        console.error('Sprite "' + sprites[j].name + '" not loaded');
+                    }
                 }
             }
         }

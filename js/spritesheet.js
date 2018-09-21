@@ -63,9 +63,7 @@
         //change color palette of image
         switchPalette(loadcallback) {
             if(this.oldPalette && this.newPalette){
-                let can = document.createElement("canvas");
-                can.height = this.img.height;
-                can.width = this.img.width;
+                let can = tools.createCanvas(this.img.height, this.img.width)
                 let ctx = can.getContext('2d');
                 ctx.drawImage(this.img, 0, 0)
                 let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);

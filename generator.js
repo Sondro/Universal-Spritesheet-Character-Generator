@@ -20,16 +20,8 @@ document.addEventListener('click', function(ev){
     }
 });
 
-function getSelection(){
-    
-}
-
 class LpcGenerator {
     constructor(character){
-        this.categories = new Category('all');
-        this.animations = [];
-        this.authors = {};
-        this.layers = {min: 0, max: 0}
         this.character = character;
     }
 

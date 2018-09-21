@@ -5,7 +5,9 @@
         Author = require('./author')
         Spritesheet = require('./spritesheet')
         tools = require('./tools')
+        XMLSerializer = require('xmldom').XMLSerializer;
     }
+    let xs = new XMLSerializer();
     class AssetManager {
 
         constructor(){
@@ -37,9 +39,12 @@
                 //initialized
                 let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
                 //parse all custom properties
-                for (let i in properties.children) {
-                    if( properties.children[i].hasAttribute){
-                        attributes[properties.children[i].getAttribute('name')] = properties.children[i].getAttribute('value');
+                let children = properties.getElementsByTagName('property')
+                // console.log(children.length)
+                for(let i = 0; i < children.length; i++){
+                    let child = children[i];
+                    if(child.hasAttribute('name') && child.hasAttribute('value')){
+                        attributes[child.getAttribute('name')] = child.getAttribute('value');
                     }
                 }
                 //adjust max and min layer
@@ -74,8 +79,6 @@
                         that.authors[authors[i]].addSprite(tmpSprite);
                     }
                 }
-                //TODO: find better way
-                //that.updateGui();
                 that.decreasePending(path);
             })
         }
