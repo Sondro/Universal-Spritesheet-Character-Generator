@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="brown" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
-  <property name="author" value="jrconway3;jaidynreiman"/>
+  <property name="author" value="jaidynreiman"/>
   <property name="category" value="clothes;sleeveless shirt"/>
   <property name="incomplete" type="bool" value="false"/>
   <property name="layer" type="int" value="2"/>

@@ -7,49 +7,65 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <title>Universal LPC Sprite Sheet Character Generator</title>
   <link rel="stylesheet" type="text/css" href="chargen.css">
-  <script type="text/javascript" src="generator.js"></script>
+  <script type="text/javascript" src="js/tools.js"></script>
+  <script type="text/javascript" src="js/spritesheet.js"></script>
+  <script type="text/javascript" src="js/category.js"></script>
+  <script type="text/javascript" src="js/author.js"></script>
+  <script type="text/javascript" src="js/assetmanager.js"></script>
+  <script type="text/javascript" src="js/character.js"></script>
   <script type="text/javascript" src="libs/jhash-2.1.js"></script>
+  <script type="text/javascript" src="js/generator.js"></script>
+  <script type="text/javascript">
+    window.onload=function (){
+      assetManager.setBaseDir('lpc/');
+      lpcGenerator = new LpcGenerator(new Character(jHash.val()));
+      lpcGenerator.onLoad();
+    };
+  </script>
 </head>
 <body>
   <header>
     <h1>Character Generator</h1>
   </header>
-  <div id="previewAnimationsBox">
-    Preview Animation:
-    <select id="whichAnim">
-    </select>
-    <canvas id="previewAnimations" width="256" height="192"></canvas>
-  </div>
-  <p class="buttons">
-    <a id="saveAsPNG"><input type="button" value="Save Result As PNG"></a>
-    <input type="button" id="collapse" value="Collapse All">
-    <button type="button">Reset all</button>
-  </p>
-  <form id="customizeChar">
-    <section id="chooser">
-      <p class="instr">Select from the character configuration options below.</p>
-      <ul>
-        <li class="keep">
-          <span class="expanded">Sex</span>
-          <ul style="display: block;">
-            <li>
-              <label><input type="radio" value="1" name="sex" checked>Male</label>
-            </li>
-            <li>
-              <label><input type="radio" value="2" name="sex">Female</label>
-            </li>
-          </ul>
-        </li>
-      </ul>
+  <div id="generator" class="hidden">
+    <div id="previewAnimationsBox">
+      Preview Animation:
+      <select id="whichAnim">
+      </select>
+      <canvas id="previewAnimations" width="256" height="192"></canvas>
+    </div>
+    <p class="buttons">
+      <a id="saveAsPNG"><input type="button" value="Save Result As PNG"></a>
+      <input type="button" id="collapse" value="Collapse All">
+      <button type="button">Reset all</button>
+    </p>
+    <form id="customizeChar">
+      <section id="chooser">
+        <p class="instr">Select from the character configuration options below.</p>
+        <ul>
+          <li class="keep">
+            <span class="expanded">Sex</span>
+            <ul style="display: block;">
+              <li>
+                <label><input type="radio" value="1" name="sex" checked>Male</label>
+              </li>
+              <li>
+                <label><input type="radio" value="2" name="sex">Female</label>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        </section>
+      </form>
+      <section id="preview">
+        <p class="instr">The complete resulting sprite sheet for your character:</p>
+        <canvas id="spritesheet" width="832" height="1344">HTML5 Browser required.</canvas>
       </section>
-    </form>
-    <section id="preview">
-      <p class="instr">The complete resulting sprite sheet for your character:</p>
-      <canvas id="spritesheet" width="832" height="1344">HTML5 Browser required.</canvas>
-    </section>
-    <section>
-      <p class="instr">Attribution:</p>
-      <p id="attribution"></p>
-    </section>
+      <section>
+        <p class="instr">Attribution:</p>
+        <p id="attribution"></p>
+      </section>
+    </div>
+    <div id="loading"></div>
   </body>
   </html>

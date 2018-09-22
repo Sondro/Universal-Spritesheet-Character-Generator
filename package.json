@@ -1,0 +1,28 @@
+{
+  "name": "character-generator-cli",
+  "version": "0.0.1",
+  "description": "Universal LPC Spritesheet Character Generator =============================================",
+  "main": "cli.js",
+  "dependencies": {
+    "canvas": "^1.6.12",
+    "xmldom": "^0.1.27"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basxto/Universal-LPC-Spritesheet-Character-Generator.git"
+  },
+  "keywords": [
+    "spritesheet",
+    "generator"
+  ],
+  "author": "basxto",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/basxto/Universal-LPC-Spritesheet-Character-Generator/issues"
+  },
+  "homepage": "https://github.com/basxto/Universal-LPC-Spritesheet-Character-Generator#readme"
+}
