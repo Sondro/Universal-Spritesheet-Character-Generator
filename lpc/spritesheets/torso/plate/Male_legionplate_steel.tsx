@@ -15,127 +15,127 @@
  <image source="Male_legionplate_steel.png" width="832" height="1344"/>
  <tile id="0">
   <properties>
-   <property name="animation" value="spellcast"/>
+   <property name="animation" value="sc"/>
    <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="13">
   <properties>
-   <property name="animation" value="spellcast"/>
+   <property name="animation" value="sc"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="26">
   <properties>
-   <property name="animation" value="spellcast"/>
+   <property name="animation" value="sc"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="39">
   <properties>
-   <property name="animation" value="spellcast"/>
+   <property name="animation" value="sc"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="52">
   <properties>
-   <property name="animation" value="thrust"/>
+   <property name="animation" value="th"/>
    <property name="direction" type="int" value="4"/>
   </properties>
  </tile>
  <tile id="65">
   <properties>
-   <property name="animation" value="thrust"/>
+   <property name="animation" value="th"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="78">
   <properties>
-   <property name="animation" value="thrust"/>
+   <property name="animation" value="th"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="91">
   <properties>
-   <property name="animation" value="thrust"/>
+   <property name="animation" value="th"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="104">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="117">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="130">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="143">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="156">
   <properties>
-   <property name="animation" value="slash"/>
+   <property name="animation" value="sl"/>
    <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="169">
   <properties>
-   <property name="animation" value="slash"/>
+   <property name="animation" value="sl"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="182">
   <properties>
-   <property name="animation" value="slash"/>
+   <property name="animation" value="sl"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="195">
   <properties>
-   <property name="animation" value="slash"/>
+   <property name="animation" value="sl"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="208">
   <properties>
-   <property name="animation" value="shoot"/>
+   <property name="animation" value="sh"/>
    <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="221">
   <properties>
-   <property name="animation" value="shoot"/>
+   <property name="animation" value="sh"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="234">
   <properties>
-   <property name="animation" value="shoot"/>
+   <property name="animation" value="sh"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="247">
   <properties>
-   <property name="animation" value="shoot"/>
+   <property name="animation" value="sh"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="260">
   <properties>
-   <property name="animation" value="hurt"/>
+   <property name="animation" value="hu"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>

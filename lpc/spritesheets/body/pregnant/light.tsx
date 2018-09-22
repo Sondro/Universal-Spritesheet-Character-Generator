@@ -13,25 +13,25 @@
  <image source="body-pregnant_ivory.png" width="640" height="768"/>
  <tile id="80">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="90">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="100">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="110">
   <properties>
-   <property name="animation" value="walk"/>
+   <property name="animation" value="wc"/>
    <property name="direction" type="int" value="3"/>
   </properties>
  </tile>

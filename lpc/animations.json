@@ -1,0 +1,26 @@
+{
+    "sc": {
+        "frames": 7,
+        "name": "spellcast"
+    },
+    "th": {
+        "frames": 8,
+        "name": "thrust"
+    },
+    "wc": {
+        "frames": 9,
+        "name": "walk"
+    },
+    "sl": {
+        "frames": 6,
+        "name": "slash"
+    },
+    "sh": {
+        "frames": 13,
+        "name": "shoot"
+    },
+    "hu": {
+        "frames": 6,
+        "name": "hurt"
+    }
+}
