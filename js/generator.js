@@ -86,12 +86,15 @@ class LpcGenerator {
     drawCanvas(){
         let canvas = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
+        let drawn = this.character.draw();
+        canvas.width = drawn.width;
+        canvas.height = drawn.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(this.character.draw(), 0, 0);
+        ctx.drawImage(drawn, 0, 0);
     }
 
     generateAttribution(syntax){
-        let attribution = document.getElementById('attribution');
+        let attribution = document.getElementById('attribution').getElementsByClassName('attribution')[0];
         attribution.innerHTML = this.character.generateAttribution('html');
     }
 

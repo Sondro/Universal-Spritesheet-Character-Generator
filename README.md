@@ -1,7 +1,7 @@
 Universal LPC Spritesheet Character Generator
 =============================================
 
-Based on [Universal LPC Spritesheet](https://github.com/jrconway3/Universal-LPC-spritesheet).
+Based on [Universal LPC Spritesheet Generator](https://github.com/sanderfrenken/Universal-LPC-Spritesheet-Character-Generator).
 
 Try it out [here](https://basxto.github.io/Universal-LPC-Spritesheet-Character-Generator/).
 
