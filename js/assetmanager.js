@@ -19,7 +19,8 @@
             this.allFiles = 0;
             this.onLoad = function(){}
             this.onProgress = function(pending, allFiles, lastPath){}
-            this.baseDir = './'
+            this.baseDir = './';
+            this.generalAnimations = {};
         }
 
         //load tileset via AJAX
@@ -34,17 +35,20 @@
                 let tileset = response.getElementsByTagName('tileset')[0];
                 let image = response.getElementsByTagName('image')[0];
                 let name = tileset.getAttribute('name');
+                let tileHeight = parseInt(tileset.getAttribute('tileheight'), 10);
+                let tileWidth = parseInt(tileset.getAttribute('tilewidth'), 10);
                 let src = dirPath + '/' + image.getAttribute('source');
-                let height = image.getAttribute('height');
-                let width = image.getAttribute('width');
-                let properties = response.getElementsByTagName('properties')[0];
+                let height = parseInt(image.getAttribute('height'), 10);
+                let width = parseInt(image.getAttribute('width'), 10);
+                //new Animation(this.generalAnimations, response.getElementsByTagName('tile'))
+                let properties = response.getElementsByTagName('properties')[0].getElementsByTagName('property');
+                let tiles = response.getElementsByTagName('tile');
                 //initialized
                 let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
+                let animations = that.generalAnimations;
                 //parse all custom properties
-                let children = properties.getElementsByTagName('property')
-                // console.log(children.length)
-                for(let i = 0; i < children.length; i++){
-                    let child = children[i];
+                for(let i = 0; i < properties.length; i++){
+                    let child = properties[i];
                     if(child.hasAttribute('name') && child.hasAttribute('value')){
                         attributes[child.getAttribute('name')] = child.getAttribute('value');
                     }
@@ -57,7 +61,51 @@
                 //don't load incomplete spritesheets
                 if(attributes['incomplete'] == 'true')
                     return;
-                let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, attributes, palette, undefined, that);
+                //parse all tile properties
+                for(let i = 0; i < tiles.length; i++){
+                    let tile = tiles[i];
+                    let id = parseInt(tile.getAttribute('id'), 10);
+                    let animation = '';
+                    let direction = -1;
+                    let frame = -1
+                    let properties = tile.getElementsByTagName('property')
+                    for(let j = 0; j < properties.length; j++){
+                        let child = properties[j];
+                        if(child.hasAttribute('name') && child.hasAttribute('value')){
+                            let value = child.getAttribute('value');
+                            switch(child.getAttribute('name')){
+                                case 'animation':
+                                    animation = value;
+                                    break
+                                case 'direction':
+                                    direction = parseInt(value, 10);
+                                    break
+                                case 'frame':
+                                    frame = parseInt(value, 10);
+                                    break
+                            }
+                        }
+                    }
+                    // skip tiles with incomplete properties
+                    if(direction >= 0 && animation != ''){
+                        if(animations[animation]){
+                            let anim = animations[animation]
+                            //create mapping object if missing
+                            if(!anim.mapping)
+                                anim.mapping = [];
+                            if(!anim.mapping[direction])
+                                anim.mapping[direction] = [];
+                            if(frame == -1){
+                                for(let j = 0; j < anim.frames; j++){
+                                    //don’t overwrite previous mappings
+                                    if(!anim.mapping[direction][j])
+                                    anim.mapping[direction][j] = id+j;
+                                }
+                            }
+                        }
+                    }
+                }
+                let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, that, animations);
                 //manage categories
                 let categories = attributes['category'].split(';');
                 //go through all categories and add them if neccessary
@@ -122,6 +170,18 @@
                 }
                 if(callback)
                     callback(colors);
+                that.decreasePending(fullPath);
+            })
+        }
+
+        //load sprite list via AJAX
+        loadGeneralAnimations (path) {
+            this.increasePending();
+            let that = this;
+            let fullPath = this.baseDir + path;
+            tools.loadPlain(fullPath, function(response){
+                //convert to json and iterate through the array
+                that.generalAnimations = JSON.parse(response);
                 that.decreasePending(fullPath);
             })
         }

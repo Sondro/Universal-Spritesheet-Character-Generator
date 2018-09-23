@@ -59,4 +59,5 @@ assetManager.onLoad = delayed;
 if(showProgress)
     assetManager.onProgress = progress;
 assetManager.setBaseDir(baseDir)
+assetManager.loadGeneralAnimations('animations.json')
 assetManager.loadList('spritesheets/');

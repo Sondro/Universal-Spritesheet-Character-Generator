@@ -11,7 +11,6 @@
     exports.loadXML = function(file, callback){
         if (typeof window === 'undefined'){
             // node
-            // TODO: return xml dom
             fs.readFile(path.join(process.cwd(),file), 'utf8', function(err, data){
                 if(!err){
                     callback(new DOMParser().parseFromString(data));
@@ -69,8 +68,10 @@
             fs.readFile(path.join(process.cwd(),file), function(err, squid){
                 if(!err){
                     img = new Image;
+                    img.onload = function(){
+                        callback(img);
+                    }
                     img.src = squid;
-                    callback(img);
                 }else{
                     console.error('Can\'t load image ' + path.join(process.cwd(),file))
                 }
@@ -85,20 +86,20 @@
         }
     }
 
-    exports.createCanvas = function(height, width){
+    exports.createCanvas = function(width, height){
         let can
         if (typeof document !== 'undefined'){
             can = document.createElement("canvas");
             can.height = height;
             can.width = width;
         }else{
-            can = new Canvas(height, width)
+            can = new Canvas(width, height)
         }
         return can;
     }
 
     exports.cloneImg = function(img){
-        let can = exports.newCanvas(img.height, img.width);
+        let can = exports.newCanvas(img.width, img.height);
         let ctx = can.getContext('2d');
         ctx.drawImage(img, 0, 0);
         return can;

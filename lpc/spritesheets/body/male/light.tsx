@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="light" tilewidth="64" tileheight="64" tilecount="273" columns="13">
+<tileset version="1.2" tiledversion="1.2.0" name="light" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
   <property name="author" value="redshrike"/>
   <property name="category" value="body"/>
@@ -38,7 +38,7 @@
  <tile id="52">
   <properties>
    <property name="animation" value="th"/>
-   <property name="direction" type="int" value="4"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="65">
@@ -134,7 +134,7 @@
  <tile id="260">
   <properties>
    <property name="animation" value="hu"/>
-   <property name="direction" type="int" value="2"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
 </tileset>

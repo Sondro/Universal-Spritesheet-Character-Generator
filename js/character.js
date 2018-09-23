@@ -65,7 +65,6 @@
 
     draw(){
         let layers = this.getLayers();
-        //TODO: calculate dimensions
         let canvas = tools.createCanvas(layers.width, layers.height);
         let ctx = canvas.getContext('2d');
         for (let layer in layers.layers){
@@ -74,6 +73,12 @@
             }
         }
         return canvas;
+    }
+
+    // position must be >0, gets limited with modulo
+    getFrame(animation, direction, position){
+        let can = tools.createCanvas(1, 1);
+        return can;
     }
 
     generateAttribution(syntax){

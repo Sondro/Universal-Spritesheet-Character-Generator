@@ -4,9 +4,10 @@
         //AssetManager = require('./assetmanager')
         //TODO: mutual require does not work
         assetManager = {'loadPalette': function(){}}
+        tools = require('./tools')
     }
     class Spritesheet {
-        constructor(name, src, width, height, attributes = {}, palette, loadcallback, assetManager){
+        constructor(name, src, width, height, tileWidth, tileHeight, attributes = {}, palette, loadcallback, assetManager, animations){
             this.name = name;
             this.src = assetManager.baseDir + src;
             //original title of the asset
@@ -20,10 +21,13 @@
             this.license = attributes['license'].split(';');
             //url of the source
             this.url = attributes['url'];
+            this.tileWidth = tileWidth;
+            this.tileHeight = tileHeight;
             let that = this;
             //load one after the other
             tools.loadImage(this.src, width,  height, function(img){
                 that.img = img
+                that.remap(animations)
                 if(palette && attributes['palette']){
                     assetManager.loadPalette(palette, function(p){
                         that.newPalette = p;
@@ -38,6 +42,48 @@
                 }
                 //AssetManager.updateGui;
             });
+        }
+
+        remap(animations){//TODO: store which animations are supported
+            let width = 0;
+            let height = 0;
+            //calculate size of unified image
+            for(let i in animations){
+                let aniWidth = animations[i].frames * this.tileWidth;
+                let aniHeiht = animations[i].directions * this.tileHeight;
+                // find widest animation
+                if(aniWidth > width)
+                    width = aniWidth;
+                height += aniHeiht;
+            }
+            let canvas = tools.createCanvas(width, height);
+            let ctx = canvas.getContext('2d');
+            let row = 0;
+            for(let i in animations){
+                for(let direction = 0; direction < animations[i].directions; direction++){
+                    // not every spritesheet offers all animations
+                    if(animations[i].mapping && animations[i].mapping[direction]){
+                        let frames = animations[i].mapping[direction]
+                        for(let frame in frames){
+                            // move tile to new position
+                            ctx.drawImage(this.getTile(frames[frame]), frame * this.tileWidth, row * this.tileHeight)
+                        }
+                    }
+                    //each direction has it’s own row
+                    row++
+                }
+            }
+            //replace image
+            this.img = canvas;
+        }
+
+        getTile(index){
+            let canvas = tools.createCanvas(this.tileWidth, this.tileHeight)
+            let x = (index * this.tileWidth) % this.img.width;
+            let y = Math.floor((index * this.tileWidth) / this.img.width) * this.tileHeight;
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(this.img, -x, -y)
+            return canvas
         }
 
         //use red channel of mask image as alpha channel
@@ -63,7 +109,7 @@
         //change color palette of image
         switchPalette(loadcallback) {
             if(this.oldPalette && this.newPalette){
-                let can = tools.createCanvas(this.img.height, this.img.width)
+                let can = tools.createCanvas(this.img.width, this.img.height)
                 let ctx = can.getContext('2d');
                 ctx.drawImage(this.img, 0, 0)
                 let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
