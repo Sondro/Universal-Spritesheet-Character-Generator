@@ -79,8 +79,25 @@
         let canvas = tools.createCanvas(layers.width, layers.height);
         let ctx = canvas.getContext('2d');
         for (let layer in layers.layers){
-            for (let sprite in layers.layers[layer]){
-                ctx.drawImage(layers.layers[layer][sprite].img, 0, 0)
+            for (let s in layers.layers[layer]){
+                let sprite = layers.layers[layer][s]
+                let img = sprite.img
+                if(sprite.tileWidth == layers.tileWidth && sprite.tileHeight == layers.tileHeight){
+                    ctx.drawImage(sprite.img, 0, 0)
+                }else{
+                    //copy and space
+                    let cols = img.width / sprite.tileWidth;
+                    let rows = img.height / sprite.tileHeight;
+                    let xoffset = (layers.tileWidth - sprite.tileWidth) / 2;
+                    let yoffset = (layers.tileHeight - sprite.tileHeight) / 2;
+                    console.log(xoffset, yoffset);
+                    for(let c = 0; c < cols; c++){
+                        for(let r = 0; r < rows; r++){
+                            ctx.drawImage(img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
+                                          c * layers.tileWidth  + xoffset, r * layers.tileHeight + yoffset, sprite.tileWidth, sprite.tileHeight);
+                        }
+                    }
+                }
             }
         }
         return canvas;

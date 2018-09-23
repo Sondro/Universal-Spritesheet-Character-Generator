@@ -65,6 +65,7 @@
     "head/caps/male/leather_cap_male.tsx",
     "legs/skirt/male/robe_skirt_male.tsx",
     "feet/shoes/male/brown_shoes_male.tsx",
+    "weapon/dragonspear.tsx",
     "head/helms/",
     "torso/"
 ]
