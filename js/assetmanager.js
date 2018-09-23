@@ -101,8 +101,10 @@
                             for(let j = 0; j < that.generalAnimations[animation].frames; j++){
                                 //don’t overwrite previous mappings
                                 if(!anim.mapping[direction][j])
-                                anim.mapping[direction][j] = id+j;
+                                    anim.mapping[direction][j] = id+j;
                             }
+                        }else{
+                            anim.mapping[direction][frame] = id;
                         }
                     }
                 }
