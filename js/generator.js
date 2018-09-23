@@ -105,24 +105,26 @@ class LpcGenerator {
         let ctx = canvas.getContext('2d');
         let tileDimension = this.character.getTileDimension();
         let selector = document.getElementById('whichAnim');
-        let selected = selector.options[selector.selectedIndex].value;
-        let animation = assetManager.generalAnimations[selected];
-        if(animation){
-            canvas.width = tileDimension.width * animation.directions;
-            canvas.height = tileDimension.height;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let position = this.counter%animation.frames;
-            let x = position * tileDimension.width;
-            for(let i = 0; i < animation.directions; i++){
-                let y = (i+animation.row) * tileDimension.height;
-                ctx.drawImage(spritesheet, x, y, tileDimension.width, tileDimension.height, i * tileDimension.width, 0, tileDimension.width, tileDimension.height);
+        if(selector.selectedIndex >= 0){
+            let selected = selector.options[selector.selectedIndex].value;
+            let animation = assetManager.generalAnimations[selected];
+            if(animation){
+                canvas.width = tileDimension.width * animation.directions;
+                canvas.height = tileDimension.height;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let position = this.counter%animation.frames;
+                let x = position * tileDimension.width;
+                for(let i = 0; i < animation.directions; i++){
+                    let y = (i+animation.row) * tileDimension.height;
+                    ctx.drawImage(spritesheet, x, y, tileDimension.width, tileDimension.height, i * tileDimension.width, 0, tileDimension.width, tileDimension.height);
+                }
+            }else{
+                canvas.width = canvas.height = 1;
             }
-        }else{
-            canvas.width = canvas.height = 1;
+            this.counter++;
         }
-        this.counter++;
         let that = this;
-        window.setTimeout(function(){that.animate()}, 1000/2)
+        window.setTimeout(function(){that.animate()}, 1000/8)
     }
 
     updateGui(){
@@ -188,11 +190,11 @@ class LpcGenerator {
             lpcGenerator.updateGui();
             document.getElementById('loading').className = 'hidden';
             document.getElementById('generator').className = '';
-            that.animate();
         }
         assetManager.onProgress = function(pending, allFiles, lastPath){
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
         assetManager.loadList('spritesheets/');
+        that.animate();
     }
 }
