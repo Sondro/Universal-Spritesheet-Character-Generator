@@ -45,7 +45,7 @@
                 let tiles = response.getElementsByTagName('tile');
                 //initialized
                 let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
-                let animations = that.generalAnimations;
+                let animations = {};
                 //parse all custom properties
                 for(let i = 0; i < properties.length; i++){
                     let child = properties[i];
@@ -88,19 +88,20 @@
                     }
                     // skip tiles with incomplete properties
                     if(direction >= 0 && animation != ''){
-                        if(animations[animation]){
-                            let anim = animations[animation]
-                            //create mapping object if missing
-                            if(!anim.mapping)
-                                anim.mapping = [];
-                            if(!anim.mapping[direction])
-                                anim.mapping[direction] = [];
-                            if(frame == -1){
-                                for(let j = 0; j < anim.frames; j++){
-                                    //don’t overwrite previous mappings
-                                    if(!anim.mapping[direction][j])
-                                    anim.mapping[direction][j] = id+j;
-                                }
+                        if(!animations[animation]){
+                            animations[animation] = {} 
+                        }
+                        let anim = animations[animation]
+                        //create mapping object if missing
+                        if(!anim.mapping)
+                            anim.mapping = [];
+                        if(!anim.mapping[direction])
+                            anim.mapping[direction] = [];
+                        if(frame == -1){
+                            for(let j = 0; j < that.generalAnimations[animation].frames; j++){
+                                //don’t overwrite previous mappings
+                                if(!anim.mapping[direction][j])
+                                anim.mapping[direction][j] = id+j;
                             }
                         }
                     }

@@ -27,7 +27,7 @@
             //load one after the other
             tools.loadImage(this.src, width,  height, function(img){
                 that.img = img
-                that.remap(animations)
+                that.remap(animations, assetManager.generalAnimations)
                 if(palette && attributes['palette']){
                     assetManager.loadPalette(palette, function(p){
                         that.newPalette = p;
@@ -44,13 +44,13 @@
             });
         }
 
-        remap(animations){//TODO: store which animations are supported
+        remap(animations, generalAnimations){//TODO: store which animations are supported
             let width = 0;
             let height = 0;
             //calculate size of unified image
-            for(let i in animations){
-                let aniWidth = animations[i].frames * this.tileWidth;
-                let aniHeiht = animations[i].directions * this.tileHeight;
+            for(let i in generalAnimations){
+                let aniWidth = generalAnimations[i].frames * this.tileWidth;
+                let aniHeiht = generalAnimations[i].directions * this.tileHeight;
                 // find widest animation
                 if(aniWidth > width)
                     width = aniWidth;
@@ -59,14 +59,16 @@
             let canvas = tools.createCanvas(width, height);
             let ctx = canvas.getContext('2d');
             let row = 0;
-            for(let i in animations){
-                for(let direction = 0; direction < animations[i].directions; direction++){
+            for(let i in generalAnimations){
+                for(let direction = 0; direction < generalAnimations[i].directions; direction++){
                     // not every spritesheet offers all animations
-                    if(animations[i].mapping && animations[i].mapping[direction]){
+                    if(animations[i] && animations[i].mapping && animations[i].mapping[direction]){
                         let frames = animations[i].mapping[direction]
                         for(let frame in frames){
-                            // move tile to new position
-                            ctx.drawImage(this.getTile(frames[frame]), frame * this.tileWidth, row * this.tileHeight)
+                            if(frame){
+                                // move tile to new position
+                                ctx.drawImage(this.getTile(frames[frame]), frame * this.tileWidth, row * this.tileHeight)
+                            }
                         }
                     }
                     //each direction has it’s own row

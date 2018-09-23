@@ -137,6 +137,10 @@ class LpcGenerator {
         });
         lpcGenerator = new LpcGenerator(new Character(jHash.val()));
         assetManager.onLoad = function(){
+            jHash.change(function() {
+                lpcGenerator.character.setSelection(jHash.val());
+                lpcGenerator.updateGui();
+            });
             lpcGenerator.character.setSelection(jHash.val());
             lpcGenerator.updateGui();
             document.getElementById('loading').className = 'hidden';
@@ -145,11 +149,6 @@ class LpcGenerator {
         assetManager.onProgress = function(pending, allFiles, lastPath){
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
-        lpcGenerator.updateGui();
-        jHash.change(function() {
-            lpcGenerator.character.setSelection(jHash.val());
-            lpcGenerator.updateGui();
-        });
         assetManager.loadList('spritesheets/');
     }
 }
