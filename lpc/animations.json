@@ -24,6 +24,11 @@
         "directions": 4,
         "name": "shoot"
     },
+    "gs": {
+        "frames": 9,
+        "directions": 4,
+        "name": "shoot with gun"
+    },
     "hu": {
         "frames": 6,
         "directions": 1,

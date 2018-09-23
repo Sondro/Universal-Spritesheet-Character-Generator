@@ -10,7 +10,18 @@
     	"name": "dark elf",
     	"palette": "skin/darkelf"
     },
-        "body/male/muscular_light.tsx",
+    "body/male/light_gunshoot.tsx",
+    {
+        "file": "body/male/light_gunshoot.tsx",
+        "name": "dark",
+        "palette": "skin/dark"
+    },
+    {
+        "file": "body/male/light_gunshoot.tsx",
+        "name": "dark elf",
+        "palette": "skin/darkelf"
+    },
+    "body/male/muscular_light.tsx",
     {
     	"file": "body/male/muscular_light.tsx",
     	"name": "dark",
@@ -43,8 +54,12 @@
     	"name": "dark elf",
     	"palette": "skin/darkelf"
     },
-    "torso/shirts/longsleeve/male/brown_longsleeve.tsx",
     "torso/shirts/longsleeve/male/white_longsleeve.tsx",
+    {
+    	"file": "torso/shirts/longsleeve/male/white_longsleeve.tsx",
+    	"name": "brown",
+    	"palette": "cloth/brown"
+    },
     "torso/shirts/sleeveless/female/brown_sleeveless.tsx",
     "belt/leather/male/leather_male.tsx",
     "head/caps/male/leather_cap_male.tsx",

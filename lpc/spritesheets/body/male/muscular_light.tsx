@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="light" tilewidth="64" tileheight="64" tilecount="273" columns="13">
+<tileset version="1.2" tiledversion="1.2.0" name="light" tilewidth="64" tileheight="64" tilecount="273" columns="13">
  <properties>
   <property name="author" value="dalonedrau;elizawy"/>
   <property name="category" value="body;muscular"/>
@@ -14,49 +14,49 @@
  <tile id="104">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="0"/>
+   <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="117">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="1"/>
+   <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="130">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="2"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="143">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="3"/>
+   <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="156">
   <properties>
    <property name="animation" value="sl"/>
-   <property name="direction" type="int" value="0"/>
+   <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="169">
   <properties>
    <property name="animation" value="sl"/>
-   <property name="direction" type="int" value="1"/>
+   <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="182">
   <properties>
    <property name="animation" value="sl"/>
-   <property name="direction" type="int" value="2"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="195">
   <properties>
    <property name="animation" value="sl"/>
-   <property name="direction" type="int" value="3"/>
+   <property name="direction" type="int" value="1"/>
   </properties>
  </tile>
  <tile id="260">

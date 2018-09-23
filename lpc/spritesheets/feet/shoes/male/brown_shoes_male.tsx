@@ -38,7 +38,7 @@
  <tile id="52">
   <properties>
    <property name="animation" value="th"/>
-   <property name="direction" type="int" value="4"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
  <tile id="65">
@@ -134,7 +134,7 @@
  <tile id="260">
   <properties>
    <property name="animation" value="hu"/>
-   <property name="direction" type="int" value="2"/>
+   <property name="direction" type="int" value="0"/>
   </properties>
  </tile>
 </tileset>
