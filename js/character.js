@@ -21,6 +21,8 @@
         let sprites = [];
         let width = 1;
         let height = 1;
+        let tileWidth = 1;
+        let tileHeight = 1;
         //extract used assets from location bar
         let hash = this.selection;//.split('.');
         for (let i in hash){ if(i != 'sex'){
@@ -54,13 +56,22 @@
                             width = sprites[j].img.width
                         if(sprites[j].img.height > height)
                             height = sprites[j].img.height
+                        if(sprites[j].tileWidth > tileWidth)
+                            tileWidth = sprites[j].tileWidth
+                        if(sprites[j].tileHeight > tileHeight)
+                            tileHeight = sprites[j].tileHeight
                     }else{
                         console.error('Sprite "' + sprites[j].name + '" not loaded');
                     }
                 }
             }
         }
-        return {'layers': layers, 'height': height, 'width': width};
+        return {'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth};
+    }
+
+    getTileDimension(){
+        let layers = this.getLayers();
+        return {'height': layers.tileHeight, 'width': layers.tileWidth}
     }
 
     draw(){

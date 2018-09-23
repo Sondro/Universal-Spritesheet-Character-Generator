@@ -21,6 +21,7 @@
             this.onProgress = function(pending, allFiles, lastPath){}
             this.baseDir = './';
             this.generalAnimations = {};
+            this.defaultAnimation = '';
         }
 
         //load tileset via AJAX
@@ -183,8 +184,14 @@
             let that = this;
             let fullPath = this.baseDir + path;
             tools.loadPlain(fullPath, function(response){
-                //convert to json and iterate through the array
                 that.generalAnimations = JSON.parse(response);
+                // take note of the rows of the animations
+                let row = 0;
+                for(let i in that.generalAnimations){
+                    let animation = that.generalAnimations[i];
+                    animation.row = row;
+                    row += animation.directions;
+                }
                 that.decreasePending(fullPath);
             })
         }

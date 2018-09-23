@@ -1,6 +1,7 @@
 class LpcGenerator {
     constructor(character){
         this.character = character;
+        this.counter = 0;
     }
 
     drawSprite(parent, mainCat, spriteset){
@@ -98,21 +99,63 @@ class LpcGenerator {
         attribution.innerHTML = this.character.generateAttribution('html');
     }
 
+    animate(){
+        let canvas = document.getElementById('previewAnimations');
+        let spritesheet = document.getElementById('spritesheet');
+        let ctx = canvas.getContext('2d');
+        let tileDimension = this.character.getTileDimension();
+        let selector = document.getElementById('whichAnim');
+        let selected = selector.options[selector.selectedIndex].value;
+        let animation = assetManager.generalAnimations[selected];
+        if(animation){
+            canvas.width = tileDimension.width * animation.directions;
+            canvas.height = tileDimension.height;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let position = this.counter%animation.frames;
+            let x = position * tileDimension.width;
+            for(let i = 0; i < animation.directions; i++){
+                let y = (i+animation.row) * tileDimension.height;
+                ctx.drawImage(spritesheet, x, y, tileDimension.width, tileDimension.height, i * tileDimension.width, 0, tileDimension.width, tileDimension.height);
+            }
+        }else{
+            canvas.width = canvas.height = 1;
+        }
+        this.counter++;
+        let that = this;
+        window.setTimeout(function(){that.animate()}, 1000/2)
+    }
+
     updateGui(){
         let mainList = document.getElementById('chooser').getElementsByTagName('ul')[0];
+        let selector = document.getElementById('whichAnim');
+        let selected = assetManager.defaultAnimation;
+        if(selector.selectedIndex >= 0)
+            selected = selector.options[selector.selectedIndex].value;
         //remove all children but those in the 'keep' class
         while (mainList.lastChild && (!mainList.lastChild.className || !mainList.lastChild.className.match(/.*keep.*/) )) {
             mainList.removeChild(mainList.lastChild)
         }
+        while (selector.lastChild) {
+            selector.removeChild(selector.lastChild)
+        }
         let mainCategories = assetManager.categories.getCategories();
         for (let i in mainCategories) {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
+        }
+        for (let animation in assetManager.generalAnimations){
+            let option = document.createElement('option');
+            option.value = animation;
+            option.innerText = assetManager.generalAnimations[animation].name;
+            if(animation == selected)
+                option.selected = 'selected';
+            selector.appendChild(option);
         }
         this.drawCanvas();
         this.generateAttribution();
     }
 
     onLoad(){
+        let that = this;
         document.getElementById('loading').innerText = 'loading...';
         document.addEventListener('click', function(ev){
             if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
@@ -145,6 +188,7 @@ class LpcGenerator {
             lpcGenerator.updateGui();
             document.getElementById('loading').className = 'hidden';
             document.getElementById('generator').className = '';
+            that.animate();
         }
         assetManager.onProgress = function(pending, allFiles, lastPath){
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';

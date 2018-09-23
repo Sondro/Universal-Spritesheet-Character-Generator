@@ -19,6 +19,7 @@
     window.onload=function (){
       assetManager.setBaseDir('lpc/');
       assetManager.loadGeneralAnimations('animations.json')
+      assetManager.defaultAnimation = 'wc';
       lpcGenerator = new LpcGenerator(new Character(jHash.val()));
       lpcGenerator.onLoad();
     };
