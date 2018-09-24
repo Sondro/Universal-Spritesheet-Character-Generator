@@ -40,7 +40,7 @@ class LpcGenerator {
                 }
                 matchAll = matchAll || match;
             }
-            //only show if it can used for the current sex
+            //only show if filters match
             if(matchAll){
                 parent.appendChild(li);
             }else if(input.checked){

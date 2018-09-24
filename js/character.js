@@ -28,14 +28,15 @@
         let tileWidth = 1;
         let tileHeight = 1;
         //extract used assets from location bar
-        let hash = this.selection;//.split('.');
+        let hash = this.selection;
         for (let i in hash){ if(i != 'sex'){
-            let category = decodeURI(hash[i]).split('.');
+            let category = Array.from(hash[i]);
             let name = category.pop();
             let lastCat = assetManager.categories;
             for (let j in category) {
-                if(lastCat)
+                if(lastCat){
                     lastCat = lastCat.getCategory(category[j]);
+                }
             }
             if(lastCat)
                 for (let j in lastCat.getSpriteset(name)){
@@ -43,7 +44,8 @@
                     let sprite = lastCat.getSpriteset(name)[j];
                     let match = true;
                     for(let filter in assetManager.filters){
-                        match = match && assetManager.filters[filter].match(sprite, this.selection)
+                        let matched = assetManager.filters[filter].match(sprite, this.selection)
+                        match = match && matched
                     }
                     if(match){
                         sprites.push(sprite);
@@ -216,7 +218,15 @@
     }
 
     setSelection(selection){
-        this.selection = selection;
+        let tmpSel = {};
+        for (let i in selection){
+            tmpSel[i] = []
+            let split = selection[i].split('.');
+            for(let j in split){
+                tmpSel[i].push(decodeURI(split[j]))
+            }
+        }
+        this.selection = tmpSel
     }
 
     }
