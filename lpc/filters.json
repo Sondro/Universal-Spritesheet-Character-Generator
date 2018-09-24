@@ -16,10 +16,12 @@
     },
     {
         "name": "muscular",
-        "category": "body;muscular"
+        "category": "body;muscular",
+        "mandatory": true
     },
     {
         "name": "pregnant",
-        "category": "body;pregnant"
+        "category": "body;pregnant",
+        "mandatory": true
     }
 ]

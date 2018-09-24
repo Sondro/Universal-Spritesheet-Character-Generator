@@ -24,6 +24,9 @@
             this.filters = {};
             this.generalAnimations = {};
             this.defaultAnimation = '';
+            // "cheats"
+            this.ignoreFilter = false;
+            this.ignoreMandatory = false;
         }
 
 

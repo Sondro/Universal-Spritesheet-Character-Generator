@@ -274,6 +274,21 @@
                 tmpSel[i].push(decodeURI(split[j]))
             }
         }
+        // set cheat codes
+        if(tmpSel.ignore_filter)
+            if(tmpSel.ignore_filter == 'true')
+                assetManager.ignoreFilter = true;
+            else
+                assetManager.ignoreFilter = false;
+        if(assetManager.ignoreFilter)
+            tmpSel.ignore_filter = 'true'
+        if(tmpSel.ignore_mandatory)
+            if(tmpSel.ignore_mandatory == 'true')
+                assetManager.ignoreMandatory = true;
+            else
+                assetManager.ignoreMandatory = false;
+        if(assetManager.ignoreMandatory)
+            tmpSel.ignore_mandatory = 'true'
         this.selection = tmpSel
     }
 
