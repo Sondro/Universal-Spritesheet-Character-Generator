@@ -20,7 +20,8 @@ function delayed(){
         }
     }
     let c = new Character(selection, assetManager);
-    let drawn = c.draw();
+    c.redraw();
+    let drawn = c.img;
     let image = file;
     if(!path.isAbsolute(image))
         image = path.join(process.cwd(), image);

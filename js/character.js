@@ -13,6 +13,9 @@
             if(selection){
                 this.setSelection(selection);
             }
+            this.img = undefined;
+            this.tileHeight = 0;
+            this.tileWidth = 0;
         }
 
 
@@ -69,12 +72,7 @@
         return {'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth};
     }
 
-    getTileDimension(){
-        let layers = this.getLayers();
-        return {'height': layers.tileHeight, 'width': layers.tileWidth}
-    }
-
-    draw(){
+    redraw(){
         let layers = this.getLayers();
         let canvas = tools.createCanvas(layers.width, layers.height);
         let ctx = canvas.getContext('2d');
@@ -100,7 +98,9 @@
                 }
             }
         }
-        return canvas;
+        this.img = canvas;
+        this.tileHeight = layers.tileHeight;
+        this.tileWidth = layers.tileWidth;
     }
 
     // position must be >0, gets limited with modulo

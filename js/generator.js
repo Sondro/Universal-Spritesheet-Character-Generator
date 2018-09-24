@@ -87,7 +87,8 @@ class LpcGenerator {
     drawCanvas(){
         let canvas = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
-        let drawn = this.character.draw();
+        this.character.redraw();
+        let drawn = this.character.img;
         canvas.width = drawn.width;
         canvas.height = drawn.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -103,25 +104,27 @@ class LpcGenerator {
         let canvas = document.getElementById('previewAnimations');
         let spritesheet = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
-        let tileDimension = this.character.getTileDimension();
         let selector = document.getElementById('whichAnim');
-        if(selector.selectedIndex >= 0){
+        console.log(this.character.tileWidth, this.character.tileHeight)
+        if(selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0){
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];
             if(animation){
-                canvas.width = tileDimension.width * animation.directions;
-                canvas.height = tileDimension.height;
+                canvas.width = this.character.tileWidth * animation.directions;
+                canvas.height = this.character.tileHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let position = this.counter%animation.frames;
-                let x = position * tileDimension.width;
+                let x = position * this.character.tileWidth;
                 for(let i = 0; i < animation.directions; i++){
-                    let y = (i+animation.row) * tileDimension.height;
-                    ctx.drawImage(spritesheet, x, y, tileDimension.width, tileDimension.height, i * tileDimension.width, 0, tileDimension.width, tileDimension.height);
+                    let y = (i+animation.row) * this.character.tileHeight;
+                    ctx.drawImage(spritesheet, x, y, this.character.tileWidth, this.character.tileHeight, i * this.character.tileWidth, 0, this.character.tileWidth, this.character.tileHeight);
                 }
             }else{
                 canvas.width = canvas.height = 1;
             }
             this.counter++;
+        }else{
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         let that = this;
         window.setTimeout(function(){that.animate()}, 1000/8)
@@ -157,7 +160,7 @@ class LpcGenerator {
     }
 
     onLoad(){
-        let that = this;
+        let lpcGenerator = this;
         document.getElementById('loading').innerText = 'loading...';
         document.addEventListener('click', function(ev){
             if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
@@ -180,7 +183,6 @@ class LpcGenerator {
                 lpcGenerator.drawCanvas();
             }
         });
-        lpcGenerator = new LpcGenerator(new Character(jHash.val()));
         assetManager.onLoad = function(){
             jHash.change(function() {
                 lpcGenerator.character.setSelection(jHash.val());
@@ -195,6 +197,6 @@ class LpcGenerator {
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
         assetManager.loadList('spritesheets/');
-        that.animate();
+        this.animate();
     }
 }
