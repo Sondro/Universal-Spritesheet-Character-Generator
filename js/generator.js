@@ -105,7 +105,6 @@ class LpcGenerator {
         let spritesheet = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
         let selector = document.getElementById('whichAnim');
-        console.log(this.character.tileWidth, this.character.tileHeight)
         if(selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0){
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];

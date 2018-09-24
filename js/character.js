@@ -88,7 +88,6 @@
                     let rows = img.height / sprite.tileHeight;
                     let xoffset = (layers.tileWidth - sprite.tileWidth) / 2;
                     let yoffset = (layers.tileHeight - sprite.tileHeight) / 2;
-                    console.log(xoffset, yoffset);
                     for(let c = 0; c < cols; c++){
                         for(let r = 0; r < rows; r++){
                             ctx.drawImage(img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
