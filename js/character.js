@@ -79,6 +79,20 @@
         return {'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth};
     }
 
+    // copy a tile from img to ctx and space it
+    drawTile(img, ctx, stw, sth, dtw, dth){//s[ource]/d[estination] t[ile]
+        let cols = img.width / dtw;
+        let rows = img.height / dth;
+        let xoffset = (stw - dtw) / 2;
+        let yoffset = (sth - dth) / 2;
+        for(let c = 0; c < cols; c++){
+            for(let r = 0; r < rows; r++){
+                ctx.drawImage(img, c * dtw, r * dth, dtw, dth,
+                                c * stw  + xoffset, r * sth + yoffset, dtw, dth);
+            }
+        }
+    }
+
     redraw(){
         let layers = this.getLayers();
         let canvas = tools.createCanvas(layers.width, layers.height);
@@ -90,23 +104,46 @@
                 if(sprite.tileWidth == layers.tileWidth && sprite.tileHeight == layers.tileHeight){
                     ctx.drawImage(sprite.img, 0, 0)
                 }else{
-                    //copy and space
-                    let cols = img.width / sprite.tileWidth;
-                    let rows = img.height / sprite.tileHeight;
-                    let xoffset = (layers.tileWidth - sprite.tileWidth) / 2;
-                    let yoffset = (layers.tileHeight - sprite.tileHeight) / 2;
-                    for(let c = 0; c < cols; c++){
-                        for(let r = 0; r < rows; r++){
-                            ctx.drawImage(img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
-                                          c * layers.tileWidth  + xoffset, r * layers.tileHeight + yoffset, sprite.tileWidth, sprite.tileHeight);
-                        }
-                    }
+                    this.drawTile(img, ctx, layers.tileWidth, layers.tileHeight, sprite.tileWidth, sprite.tileHeight)
                 }
             }
         }
         this.img = canvas;
         this.tileHeight = layers.tileHeight;
         this.tileWidth = layers.tileWidth;
+    }
+
+    // export preview canvas of spriteset
+    exportPreview(spriteset){
+        console.log(spriteset)
+        let tileWidth = 0;
+        let tileHeight = 0;
+        let sprites = []
+
+        for (let j in spriteset){
+            //only include spritesets with correct sex
+            let sprite = spriteset[j];
+            let match = true;
+            for(let filter in assetManager.filters){
+                let matched = assetManager.filters[filter].match(sprite, this.selection)
+                match = match && matched
+            }
+            if(match){
+                sprites.push(sprite);
+                if(sprite.tileWidth > tileWidth)
+                    tileWidth = sprite.tileWidth
+                if(sprite.tileHeight > tileHeight)
+                    tileHeight = sprite.tileHeight
+            }
+        }
+        let canvas = tools.createCanvas(tileWidth, tileHeight);
+        let ctx = canvas.getContext('2d');
+        for(let sprite of sprites){
+            //ctx.drawImage(sprite.img, 0, 0)
+            if(sprite.img)
+                this.drawTile(sprite.img, ctx, tileWidth, tileHeight, sprite.tileWidth, sprite.tileHeight)
+        }
+        return canvas;
     }
 
     // position must be >0, gets limited with modulo
