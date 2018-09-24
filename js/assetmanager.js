@@ -24,6 +24,7 @@
             this.defaultAnimation = '';
         }
 
+
         //load tileset via AJAX
         loadTsx (path, palette, nameOverride) {
             this.increasePending();
@@ -33,108 +34,133 @@
             let that = this;
             let fullPath = this.baseDir + path
             tools.loadXML(fullPath, function(response) {
-                let tileset = response.getElementsByTagName('tileset')[0];
-                let image = response.getElementsByTagName('image')[0];
-                let name = tileset.getAttribute('name');
-                let tileHeight = parseInt(tileset.getAttribute('tileheight'), 10);
-                let tileWidth = parseInt(tileset.getAttribute('tilewidth'), 10);
-                let src = dirPath + '/' + image.getAttribute('source');
-                let height = parseInt(image.getAttribute('height'), 10);
-                let width = parseInt(image.getAttribute('width'), 10);
-                //new Animation(this.generalAnimations, response.getElementsByTagName('tile'))
+
                 let properties = response.getElementsByTagName('properties')[0].getElementsByTagName('property');
-                let tiles = response.getElementsByTagName('tile');
-                //initialized
-                let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
-                let animations = {};
+                let animationReference = "";
                 //parse all custom properties
                 for(let i = 0; i < properties.length; i++){
                     let child = properties[i];
                     if(child.hasAttribute('name') && child.hasAttribute('value')){
-                        attributes[child.getAttribute('name')] = child.getAttribute('value');
+                        if(child.getAttribute('name') == 'animation')
+                            animationReference = child.getAttribute('value');
                     }
                 }
-                //adjust max and min layer
-                if(attributes['layer'] > that.layers.max)
-                    that.layers.max = attributes['layer'];
-                if(attributes['layer'] < that.layers.min)
-                    that.layers.min = attributes['layer'];
-                //don't load incomplete spritesheets
-                if(attributes['incomplete'] == 'true')
-                    return;
-                //parse all tile properties
-                for(let i = 0; i < tiles.length; i++){
-                    let tile = tiles[i];
-                    let id = parseInt(tile.getAttribute('id'), 10);
-                    let animation = '';
-                    let direction = -1;
-                    let frame = -1
-                    let properties = tile.getElementsByTagName('property')
-                    for(let j = 0; j < properties.length; j++){
-                        let child = properties[j];
-                        if(child.hasAttribute('name') && child.hasAttribute('value')){
-                            let value = child.getAttribute('value');
-                            switch(child.getAttribute('name')){
-                                case 'animation':
-                                    animation = value;
-                                    break
-                                case 'direction':
-                                    direction = parseInt(value, 10);
-                                    break
-                                case 'frame':
-                                    frame = parseInt(value, 10);
-                                    break
-                            }
-                        }
-                    }
-                    // skip tiles with incomplete properties
-                    if(direction >= 0 && animation != ''){
-                        if(!animations[animation]){
-                            animations[animation] = {} 
-                        }
-                        let anim = animations[animation]
-                        //create mapping object if missing
-                        if(!anim.mapping)
-                            anim.mapping = [];
-                        if(!anim.mapping[direction])
-                            anim.mapping[direction] = [];
-                        if(frame == -1){
-                            for(let j = 0; j < that.generalAnimations[animation].frames; j++){
-                                //don’t overwrite previous mappings
-                                if(!anim.mapping[direction][j])
-                                    anim.mapping[direction][j] = id+j;
-                            }
-                        }else{
-                            anim.mapping[direction][frame] = id;
-                        }
-                    }
+                if(animationReference == ""){
+                    let tiles = response.getElementsByTagName('tile');
+                    that.loadTsxParser(path, dirPath, palette, nameOverride, response, tiles);
+                }else{
+                    that.increasePending();
+                    fullPath = that.baseDir + dirPath + '/' + animationReference;
+                    console.log(fullPath)
+                    tools.loadXML(fullPath, function(resp) {
+                        let tiles = resp.getElementsByTagName('tile');
+                        that.decreasePending(animationReference);
+                        that.loadTsxParser(path, dirPath, palette, nameOverride, response, tiles);
+                    })
                 }
-                let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, that, animations);
-                //manage categories
-                let categories = attributes['category'].split(';');
-                //go through all categories and add them if neccessary
-                let lastCat = that.categories;
-                for (let i in categories) {
-                    if (!lastCat.hasCategory(categories[i])) {
-                        lastCat.addCategory(categories[i]);
-                    }
-                    lastCat = lastCat.getCategory(categories[i]);
-                }
-                //add sprite to latest category
-                lastCat.addSprite(tmpSprite);
-        
-                //manage authors
-                let authors = attributes['author'].split(';');
-                for (let i in authors){
-                    //create if doesn’t exist
-                    if(!that.authors[authors[i]]){
-                        that.loadAuthor(authors[i], tmpSprite);
-                    } else {
-                        that.authors[authors[i]].addSprite(tmpSprite);
-                    }
-                }
-                that.decreasePending(path);
             })
+        }
+
+        loadTsxParser (path,  dirPath, palette, nameOverride, xml, tiles) {
+            let tileset = xml.getElementsByTagName('tileset')[0];
+            let image = xml.getElementsByTagName('image')[0];
+            let name = tileset.getAttribute('name');
+            let tileHeight = parseInt(tileset.getAttribute('tileheight'), 10);
+            let tileWidth = parseInt(tileset.getAttribute('tilewidth'), 10);
+            let src = dirPath + '/' + image.getAttribute('source');
+            let height = parseInt(image.getAttribute('height'), 10);
+            let width = parseInt(image.getAttribute('width'), 10);
+            //new Animation(this.generalAnimations, xml.getElementsByTagName('tile'))
+            let properties = xml.getElementsByTagName('properties')[0].getElementsByTagName('property');
+            //initialized
+            let attributes = {layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0};
+            let animations = {};
+            //parse all custom properties
+            for(let i = 0; i < properties.length; i++){
+                let child = properties[i];
+                if(child.hasAttribute('name') && child.hasAttribute('value')){
+                    attributes[child.getAttribute('name')] = child.getAttribute('value');
+                }
+            }
+            //adjust max and min layer
+            if(attributes['layer'] > this.layers.max)
+                this.layers.max = attributes['layer'];
+            if(attributes['layer'] < this.layers.min)
+                this.layers.min = attributes['layer'];
+            //don't load incomplete spritesheets
+            if(attributes['incomplete'] == 'true')
+                return;
+            //parse all tile properties
+            for(let i = 0; i < tiles.length; i++){
+                let tile = tiles[i];
+                let id = parseInt(tile.getAttribute('id'), 10);
+                let animation = '';
+                let direction = -1;
+                let frame = -1
+                let properties = tile.getElementsByTagName('property')
+                for(let j = 0; j < properties.length; j++){
+                    let child = properties[j];
+                    if(child.hasAttribute('name') && child.hasAttribute('value')){
+                        let value = child.getAttribute('value');
+                        switch(child.getAttribute('name')){
+                            case 'animation':
+                                animation = value;
+                                break
+                            case 'direction':
+                                direction = parseInt(value, 10);
+                                break
+                            case 'frame':
+                                frame = parseInt(value, 10);
+                                break
+                        }
+                    }
+                }
+                // skip tiles with incomplete properties
+                if(direction >= 0 && animation != ''){
+                    if(!animations[animation]){
+                        animations[animation] = {} 
+                    }
+                    let anim = animations[animation]
+                    //create mapping object if missing
+                    if(!anim.mapping)
+                        anim.mapping = [];
+                    if(!anim.mapping[direction])
+                        anim.mapping[direction] = [];
+                    if(frame == -1){
+                        for(let j = 0; j < this.generalAnimations[animation].frames; j++){
+                            //don’t overwrite previous mappings
+                            if(!anim.mapping[direction][j])
+                                anim.mapping[direction][j] = id+j;
+                        }
+                    }else{
+                        anim.mapping[direction][frame] = id;
+                    }
+                }
+            }
+            let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, this, animations);
+            //manage categories
+            let categories = attributes['category'].split(';');
+            //go through all categories and add them if neccessary
+            let lastCat = this.categories;
+            for (let i in categories) {
+                if (!lastCat.hasCategory(categories[i])) {
+                    lastCat.addCategory(categories[i]);
+                }
+                lastCat = lastCat.getCategory(categories[i]);
+            }
+            //add sprite to latest category
+            lastCat.addSprite(tmpSprite);
+            //manage authors
+            let authors = attributes['author'].split(';');
+            for (let i in authors){
+                //create if doesn’t exist
+                if(!this.authors[authors[i]]){
+                    this.loadAuthor(authors[i], tmpSprite);
+                } else {
+                    this.authors[authors[i]].addSprite(tmpSprite);
+                }
+            }
+            this.decreasePending(path);
         }
 
         //load author via AJAX

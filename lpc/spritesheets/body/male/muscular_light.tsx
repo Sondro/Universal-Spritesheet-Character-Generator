@@ -14,13 +14,13 @@
  <tile id="104">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="1"/>
+   <property name="direction" type="int" value="2"/>
   </properties>
  </tile>
  <tile id="117">
   <properties>
    <property name="animation" value="wc"/>
-   <property name="direction" type="int" value="2"/>
+   <property name="direction" type="int" value="3"/>
   </properties>
  </tile>
  <tile id="130">
