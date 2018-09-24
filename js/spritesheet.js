@@ -24,6 +24,7 @@
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
             this.filters = attributes['filters'];
+            this.supportedAnimations = {}
             let that = this;
             //load one after the other
             tools.loadImage(this.src, width,  height, function(img){
@@ -64,6 +65,7 @@
                 for(let direction = 0; direction < generalAnimations[i].directions; direction++){
                     // not every spritesheet offers all animations
                     if(animations[i] && animations[i].mapping && animations[i].mapping[direction]){
+                        this.supportedAnimations[i] = true;
                         let frames = animations[i].mapping[direction]
                         for(let frame in frames){
                             if(frame){
