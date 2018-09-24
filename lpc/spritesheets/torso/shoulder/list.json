@@ -1,8 +1,12 @@
-[
-    "bow/leather.tsx",
-    "hurt/leather.tsx",
-    "slash/leather.tsx",
-    "thrust/leather.tsx",
-    "walkcycle/leather.tsx",
-    "spellcast/leather.tsx"
-]
+{
+    "layer": 3,
+    "category": "shoulder",
+    "files": [
+        "bow/leather.tsx",
+        "hurt/leather.tsx",
+        "slash/leather.tsx",
+        "thrust/leather.tsx",
+        "walkcycle/leather.tsx",
+        "spellcast/leather.tsx"
+    ]
+}

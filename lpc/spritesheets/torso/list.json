@@ -23,5 +23,10 @@
     	"name": "gold",
     	"palette": "metal/gold"
     },
-    "shoulder/"
+    "shoulder/",
+    {
+    	"file": "shoulder/",
+    	"name": "white",
+    	"palette": "metal/white"
+    }
 ]

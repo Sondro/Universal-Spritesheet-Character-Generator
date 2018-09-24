@@ -26,7 +26,7 @@
 
 
         //load tileset via AJAX
-        loadTsx (path, palette, nameOverride) {
+        loadTsx (path, palette, override={}) {
             this.increasePending();
             let dirArr = path.split('/');
             dirArr.pop();
@@ -47,24 +47,23 @@
                 }
                 if(animationReference == ""){
                     let tiles = response.getElementsByTagName('tile');
-                    that.loadTsxParser(path, dirPath, palette, nameOverride, response, tiles);
+                    that.loadTsxParser(path, dirPath, palette, override, response, tiles);
                 }else{
                     that.increasePending();
                     fullPath = that.baseDir + dirPath + '/' + animationReference;
-                    console.log(fullPath)
                     tools.loadXML(fullPath, function(resp) {
                         let tiles = resp.getElementsByTagName('tile');
                         that.decreasePending(animationReference);
-                        that.loadTsxParser(path, dirPath, palette, nameOverride, response, tiles);
+                        that.loadTsxParser(path, dirPath, palette, override, response, tiles);
                     })
                 }
             })
         }
 
-        loadTsxParser (path,  dirPath, palette, nameOverride, xml, tiles) {
+        loadTsxParser (path,  dirPath, palette, override, xml, tiles) {
             let tileset = xml.getElementsByTagName('tileset')[0];
             let image = xml.getElementsByTagName('image')[0];
-            let name = tileset.getAttribute('name');
+            let name = (override.name ? override.name : tileset.getAttribute('name'))
             let tileHeight = parseInt(tileset.getAttribute('tileheight'), 10);
             let tileWidth = parseInt(tileset.getAttribute('tilewidth'), 10);
             let src = dirPath + '/' + image.getAttribute('source');
@@ -81,6 +80,11 @@
                 if(child.hasAttribute('name') && child.hasAttribute('value')){
                     attributes[child.getAttribute('name')] = child.getAttribute('value');
                 }
+            }
+            // override attributes
+            for(let attr of ['layer', 'category', 'incomplete']){
+                if(override[attr])
+                    attributes[attr] = override[attr];
             }
             //adjust max and min layer
             if(attributes['layer'] > this.layers.max)
@@ -137,7 +141,7 @@
                     }
                 }
             }
-            let tmpSprite = new Spritesheet((nameOverride ? nameOverride : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, this, animations);
+            let tmpSprite = new Spritesheet((override.name ? override.name : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, this, animations);
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -223,23 +227,40 @@
         }
 
         //load sprite list via AJAX
-        loadList (path) {
+        loadList (path, listOverride={}) {
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + path + 'list.json';
             tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var list = JSON.parse(response);
+                // list with meta data
+                if(list.files){
+                    console.log('mega override!')
+                    // override whole list
+                    for(let attr of ['name', 'category', 'layer', 'incomplete']){
+                        if(list[attr])
+                            listOverride[attr] = list[attr];
+                    }
+                    list = list.files;
+                }
                 for (let i in list) {
                     let filePath = path + (list[i].file ? list[i].file : list[i])
+                    // shallow copy
+                    let override = Object.assign({}, listOverride);
+                    // override specific entry
+                    for(let attr of ['name', 'category', 'layer', 'incomplete']){
+                        if(list[i][attr])
+                            override[attr] = list[i][attr];
+                    }
                     //check file extensions
                     if (filePath.split('.').pop() == 'tsx') {
                         //allow objects for tsx files 
                         //for palette changing
-                        that.loadTsx(filePath, list[i].palette, list[i].name);
+                        that.loadTsx(filePath, list[i].palette, override);
                     }
                     if (filePath[filePath.length - 1] == '/') {
-                        that.loadList(filePath);
+                        that.loadList(filePath, override);
                     }
                     //ignore exerything else
                 }
