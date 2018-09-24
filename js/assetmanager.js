@@ -28,7 +28,7 @@
 
 
         //load tileset via AJAX
-        loadTsx (path, palette, override={}) {
+        loadTsx (path, override={}) {
             this.increasePending();
             let dirArr = path.split('/');
             dirArr.pop();
@@ -49,20 +49,20 @@
                 }
                 if(animationReference == ""){
                     let tiles = response.getElementsByTagName('tile');
-                    that.loadTsxParser(path, dirPath, palette, override, response, tiles);
+                    that.loadTsxParser(path, dirPath, override, response, tiles);
                 }else{
                     that.increasePending();
                     fullPath = that.baseDir + dirPath + '/' + animationReference;
                     tools.loadXML(fullPath, function(resp) {
                         let tiles = resp.getElementsByTagName('tile');
                         that.decreasePending(animationReference);
-                        that.loadTsxParser(path, dirPath, palette, override, response, tiles);
+                        that.loadTsxParser(path, dirPath, override, response, tiles);
                     })
                 }
             })
         }
 
-        loadTsxParser (path,  dirPath, palette, override, xml, tiles) {
+        loadTsxParser (path,  dirPath, override, xml, tiles) {
             let tileset = xml.getElementsByTagName('tileset')[0];
             let image = xml.getElementsByTagName('image')[0];
             let name = (override.name ? override.name : tileset.getAttribute('name'))
@@ -94,6 +94,11 @@
             for(let attr of ['layer', 'category', 'incomplete']){
                 if(override[attr])
                     attributes[attr] = override[attr];
+            }
+            // override filters
+            if(override.filters){
+                for(let i in override.filters)
+                    attributes.filters[i] = override.filters[i];
             }
             //adjust max and min layer
             if(attributes['layer'] > this.layers.max)
@@ -150,7 +155,7 @@
                     }
                 }
             }
-            let tmpSprite = new Spritesheet((override.name ? override.name : name), src, width, height, tileWidth, tileHeight, attributes, palette, undefined, this, animations);
+            let tmpSprite = new Spritesheet((override.name ? override.name : name), src, width, height, tileWidth, tileHeight, attributes, override.palette, undefined, this, animations);
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -259,9 +264,8 @@
                 var list = JSON.parse(response);
                 // list with meta data
                 if(list.files){
-                    console.log('mega override!')
                     // override whole list
-                    for(let attr of ['name', 'category', 'layer', 'incomplete']){
+                    for(let attr of ['name', 'category', 'layer', 'incomplete', 'filters']){
                         if(list[attr])
                             listOverride[attr] = list[attr];
                     }
@@ -272,7 +276,7 @@
                     // shallow copy
                     let override = Object.assign({}, listOverride);
                     // override specific entry
-                    for(let attr of ['name', 'category', 'layer', 'incomplete']){
+                    for(let attr of ['name', 'category', 'layer', 'incomplete', 'filters', 'palette']){
                         if(list[i][attr])
                             override[attr] = list[i][attr];
                     }
@@ -280,7 +284,7 @@
                     if (filePath.split('.').pop() == 'tsx') {
                         //allow objects for tsx files 
                         //for palette changing
-                        that.loadTsx(filePath, list[i].palette, override);
+                        that.loadTsx(filePath, override);
                     }
                     if (filePath[filePath.length - 1] == '/') {
                         that.loadList(filePath, override);

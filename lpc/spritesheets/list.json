@@ -1,14 +1,14 @@
 [
     "body/male/light.tsx",
     {
-    	"file": "body/male/light.tsx",
-    	"name": "dark",
-    	"palette": "skin/dark"
+        "file": "body/male/light.tsx",
+        "name": "dark",
+        "palette": "skin/dark"
     },
     {
-    	"file": "body/male/light.tsx",
-    	"name": "dark elf",
-    	"palette": "skin/darkelf"
+        "file": "body/male/light.tsx",
+        "name": "dark elf",
+        "palette": "skin/darkelf"
     },
     "body/male/light_gunshoot.tsx",
     {
@@ -23,42 +23,42 @@
     },
     "body/male/muscular_light.tsx",
     {
-    	"file": "body/male/muscular_light.tsx",
-    	"name": "dark",
-    	"palette": "skin/dark"
+        "file": "body/male/muscular_light.tsx",
+        "name": "dark",
+        "palette": "skin/dark"
     },
     {
-    	"file": "body/male/muscular_light.tsx",
-    	"name": "dark elf",
-    	"palette": "skin/darkelf"
+        "file": "body/male/muscular_light.tsx",
+        "name": "dark elf",
+        "palette": "skin/darkelf"
     },
     "body/female/light.tsx",
     {
-    	"file": "body/female/light.tsx",
-    	"name": "dark",
-    	"palette": "skin/dark"
+        "file": "body/female/light.tsx",
+        "name": "dark",
+        "palette": "skin/dark"
     },
     {
-    	"file": "body/female/light.tsx",
-    	"name": "dark elf",
-    	"palette": "skin/darkelf"
+        "file": "body/female/light.tsx",
+        "name": "dark elf",
+        "palette": "skin/darkelf"
     },
     "body/pregnant/light.tsx",
     {
-    	"file": "body/pregnant/light.tsx",
-    	"name": "dark",
-    	"palette": "skin/dark"
+        "file": "body/pregnant/light.tsx",
+        "name": "dark",
+        "palette": "skin/dark"
     },
     {
-    	"file": "body/pregnant/light.tsx",
-    	"name": "dark elf",
-    	"palette": "skin/darkelf"
+        "file": "body/pregnant/light.tsx",
+        "name": "dark elf",
+        "palette": "skin/darkelf"
     },
     "torso/shirts/longsleeve/male/white_longsleeve.tsx",
     {
-    	"file": "torso/shirts/longsleeve/male/white_longsleeve.tsx",
-    	"name": "brown",
-    	"palette": "cloth/brown"
+        "file": "torso/shirts/longsleeve/male/white_longsleeve.tsx",
+        "name": "brown",
+        "palette": "cloth/brown"
     },
     "torso/shirts/sleeveless/female/brown_sleeveless.tsx",
     "belt/leather/male/leather_male.tsx",
@@ -68,10 +68,19 @@
     "weapon/dragonspear.tsx",
     "head/helms/",
     "torso/",
-    "body/ears",
+    "body/ears/",
     {
-        "file": "body/ears",
-        "name": "dark",
+        "file": "body/ears/",
+        "filters":{
+            "body": "2"
+        },
         "palette": "skin/dark"
+    },
+    {
+        "file": "body/ears/",
+        "filters":{
+            "body": "4"
+        },
+        "palette": "skin/darkelf"
     }
 ]
