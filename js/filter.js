@@ -15,10 +15,10 @@
         match(sprite, selection){
             let condition = sprite.filters[this.name];
             let value = selection[this.name];
-            if(selection.ignore_filter){
+            if(selection.ignoreFilter){
                 return true;
             }
-            if(selection.ignore_mandatory && this.mandatory){
+            if(selection.ignoreMandatory && this.mandatory){
                 return true;
             }
             // always show sprite if sprite triggers the filter

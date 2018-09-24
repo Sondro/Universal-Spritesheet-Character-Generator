@@ -27,6 +27,7 @@
             // "cheats"
             this.ignoreFilter = false;
             this.ignoreMandatory = false;
+            this.incompleteAnimations = false;
         }
 
 

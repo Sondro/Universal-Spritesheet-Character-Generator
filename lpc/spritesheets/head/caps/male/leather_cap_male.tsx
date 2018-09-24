@@ -5,8 +5,7 @@
   <property name="author" value="wulax"/>
   <property name="category" value="hats"/>
   <property name="filter_muscular" type="bool" value="false"/>
-  <property name="filter_pregnant" type="bool" value="false"/>
-  <property name="filter_sex" type="int" value="3"/>
+  <property name="filter_sex" type="int" value="1"/>
   <property name="incomplete" type="bool" value="false"/>
   <property name="layer" type="int" value="3"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>

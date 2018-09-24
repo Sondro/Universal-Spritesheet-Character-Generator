@@ -27,6 +27,11 @@
         let height = 1;
         let tileWidth = 1;
         let tileHeight = 1;
+        let supportedAnimations = {};
+        // initialize all possible animations
+        for(let anim in assetManager.generalAnimations){
+            supportedAnimations[anim] = true;
+        }
         //extract used assets from location bar
         let hash = this.selection;
         for (let i in hash){ if(i != 'sex'){
@@ -38,7 +43,8 @@
                     lastCat = lastCat.getCategory(category[j]);
                 }
             }
-            if(lastCat)
+            if(lastCat){
+                let setAnimations = {};
                 for (let j in lastCat.getSpriteset(name)){
                     //only include spritesets with correct sex
                     let sprite = lastCat.getSpriteset(name)[j];
@@ -49,8 +55,19 @@
                     }
                     if(match){
                         sprites.push(sprite);
+                        // add to supported set animations
+                        for(let anim in sprite.supportedAnimations){
+                            setAnimations[anim] = true;
+                        }
                     }
                 }
+                // remove unsupported animations
+                if(!assetManager.incompleteAnimations)
+                    for(let anim in supportedAnimations){
+                        if(!setAnimations[anim])
+                            supportedAnimations[anim] = false;
+                    }
+            }
         }}
 
         let layers = [];
@@ -76,7 +93,7 @@
                 }
             }
         }
-        return {'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth};
+        return {'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth, 'animations': supportedAnimations};
     }
 
     redraw(){
@@ -275,20 +292,15 @@
             }
         }
         // set cheat codes
-        if(tmpSel.ignore_filter)
-            if(tmpSel.ignore_filter == 'true')
-                assetManager.ignoreFilter = true;
-            else
-                assetManager.ignoreFilter = false;
-        if(assetManager.ignoreFilter)
-            tmpSel.ignore_filter = 'true'
-        if(tmpSel.ignore_mandatory)
-            if(tmpSel.ignore_mandatory == 'true')
-                assetManager.ignoreMandatory = true;
-            else
-                assetManager.ignoreMandatory = false;
-        if(assetManager.ignoreMandatory)
-            tmpSel.ignore_mandatory = 'true'
+        for(let cheat of ['ignoreFilter', 'ignoreMandatory', 'incompleteAnimations']){
+            if(tmpSel[cheat.toLowerCase()])
+                if(tmpSel[cheat.toLowerCase()] == 'true')
+                    assetManager[cheat] = true;
+                else
+                    assetManager[cheat] = false;
+            if(assetManager[cheat])
+                tmpSel[cheat]= 'true'
+        }
         this.selection = tmpSel
     }
 
