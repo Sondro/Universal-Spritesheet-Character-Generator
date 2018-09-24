@@ -1,0 +1,25 @@
+[
+    {
+        "name": "sex",
+        "values": [
+            "male",
+            "female"
+        ]
+    },
+    {
+        "name": "body",
+        "values": [
+            "light",
+            "dark",
+            "dark elf"
+        ]
+    },
+    {
+        "name": "muscular",
+        "category": "body;muscular"
+    },
+    {
+        "name": "pregnant",
+        "category": "body;pregnant"
+    }
+]

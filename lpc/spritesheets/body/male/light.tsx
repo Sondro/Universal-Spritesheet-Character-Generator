@@ -6,7 +6,7 @@
   <property name="layer" type="int" value="0"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="palette" value="skin/light"/>
-  <property name="sex" type="int" value="1"/>
+  <property name="filter_sex" type="int" value="1"/>
   <property name="title" value="Asset List"/>
   <property name="url" value="http://lpc.opengameart.org/static/lpc-style-guide/assets.html"/>
  </properties>

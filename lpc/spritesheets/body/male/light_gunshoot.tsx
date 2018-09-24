@@ -6,7 +6,7 @@
   <property name="layer" type="int" value="0"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="palette" value="skin/light"/>
-  <property name="sex" type="int" value="1"/>
+  <property name="filter_sex" type="int" value="1"/>
   <property name="title" value="[LPC] Skorpio's SciFi Sprite Pack"/>
   <property name="url" value="https://opengameart.org/content/lpc-skorpios-scifi-sprite-pack"/>
  </properties>

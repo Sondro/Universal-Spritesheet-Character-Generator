@@ -14,12 +14,12 @@
   <script type="text/javascript" src="js/author.js"></script>
   <script type="text/javascript" src="js/assetmanager.js"></script>
   <script type="text/javascript" src="js/character.js"></script>
+  <script type="text/javascript" src="js/filter.js"></script>
   <script type="text/javascript" src="libs/jhash-2.1.js"></script>
   <script type="text/javascript" src="js/generator.js"></script>
   <script type="text/javascript">
     window.onload=function (){
       assetManager.setBaseDir('lpc/');
-      assetManager.loadGeneralAnimations('animations.json')
       assetManager.defaultAnimation = 'wc';
       lpcGenerator = new LpcGenerator(new Character(jHash.val()));
       lpcGenerator.onLoad();
@@ -47,10 +47,10 @@
             <span class="expanded">Sex</span>
             <ul style="display: block;">
               <li>
-                <label><input type="radio" value="1" name="sex" checked>Male</label>
+                <label><input type="radio" value="sex.male" name="sex" checked>Male</label>
               </li>
               <li>
-                <label><input type="radio" value="2" name="sex">Female</label>
+                <label><input type="radio" value="sex.female" name="sex">Female</label>
               </li>
             </ul>
           </li>

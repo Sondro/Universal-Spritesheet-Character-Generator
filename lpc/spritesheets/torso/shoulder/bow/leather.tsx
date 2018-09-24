@@ -4,7 +4,7 @@
   <property name="author" value="wulax"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="palette" value="cloth/brown"/>
-  <property name="sex" type="int" value="1"/>
+  <property name="filter_sex" type="int" value="1"/>
   <property name="title" value="[LPC] Medieval fantasy character sprites"/>
   <property name="url" value="https://opengameart.org/content/lpc-medieval-fantasy-character-sprites"/>
  </properties>

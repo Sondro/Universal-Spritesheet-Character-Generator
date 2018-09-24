@@ -1,11 +1,12 @@
 (function(exports){
     if (typeof window === 'undefined'){
         tools = require('./tools')
-        //assetManager = require('./assetmanager')
+        //assetManager = require('./assetManager')
     }
     class Character {
 
         constructor(selection, am){
+            //only set for node, otherwise use  the global object
             if(am)
                 assetManager = am
             this.sex = 1;
@@ -40,7 +41,11 @@
                 for (let j in lastCat.getSpriteset(name)){
                     //only include spritesets with correct sex
                     let sprite = lastCat.getSpriteset(name)[j];
-                    if(sprite.sex == 0 || sprite.sex & this.getSex()){
+                    let match = true;
+                    for(let filter in assetManager.filters){
+                        match = match && assetManager.filters[filter].match(sprite, this.selection)
+                    }
+                    if(match){
                         sprites.push(sprite);
                     }
                 }
@@ -211,18 +216,7 @@
     }
 
     setSelection(selection){
-        if(selection.sex){
-            this.sex = selection.sex;
-            delete selection.sex;
-        }else{
-            this.sex = 1
-        }
-
         this.selection = selection;
-    }
-
-    getSex(){
-        return this.sex;
     }
 
     }

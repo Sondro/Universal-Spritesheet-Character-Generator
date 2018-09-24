@@ -5,7 +5,7 @@
   <property name="category" value="weapon"/>
   <property name="layer" type="int" value="3"/>
   <property name="license" value="CC BY-SA 3.0"/>
-  <property name="sex" type="int" value="1"/>
+  <property name="filter_sex" type="int" value="1"/>
   <property name="title" value="LPC Weapons: two bows, a spear and a trident"/>
   <property name="url" value="https://opengameart.org/content/lpc-weapons-two-bows-a-spear-and-a-trident"/>
  </properties>

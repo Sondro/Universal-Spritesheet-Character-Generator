@@ -8,7 +8,7 @@
   <property name="layer" type="int" value="3"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0;GNU GPL 2.0"/>
   <property name="palette" value="metal/iron"/>
-  <property name="sex" type="int" value="2"/>
+  <property name="filter_sex" type="int" value="2"/>
   <property name="title" value="LPC roman armor"/>
   <property name="url" value="https://opengameart.org/content/lpc-roman-armor"/>
  </properties>

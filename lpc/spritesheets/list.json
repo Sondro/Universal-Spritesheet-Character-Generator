@@ -67,5 +67,11 @@
     "feet/shoes/male/brown_shoes_male.tsx",
     "weapon/dragonspear.tsx",
     "head/helms/",
-    "torso/"
+    "torso/",
+    "body/ears",
+    {
+        "file": "body/ears",
+        "name": "dark",
+        "palette": "skin/dark"
+    }
 ]

@@ -23,6 +23,7 @@
             this.url = attributes['url'];
             this.tileWidth = tileWidth;
             this.tileHeight = tileHeight;
+            this.filters = attributes['filters'];
             let that = this;
             //load one after the other
             tools.loadImage(this.src, width,  height, function(img){

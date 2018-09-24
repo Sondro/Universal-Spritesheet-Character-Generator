@@ -5,7 +5,7 @@ const Character = require('./js/character')
 let assetManager = require('./js/assetmanager')
 
 if(process.argv.length < 3){
-    console.error('example: ./cli.js --basedir=lpc/ --file=test.png --sex=1 --body="body.light" --legs=legs.robe%20skirt')
+    console.error('example: ./cli.js --basedir=lpc/ --file=test.png --sex=sex.male --body="body.light" --legs=legs.robe%20skirt')
     process.exit(1);
 }
 
@@ -61,4 +61,5 @@ if(showProgress)
     assetManager.onProgress = progress;
 assetManager.setBaseDir(baseDir)
 assetManager.loadGeneralAnimations('animations.json')
+assetManager.loadFilters('filters.json');
 assetManager.loadList('spritesheets/');

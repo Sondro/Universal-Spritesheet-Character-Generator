@@ -30,16 +30,18 @@ class LpcGenerator {
         li.appendChild(label);
         //assume 'none' option if invalid spriteset
         if(spriteset){
-            let validSex = false;
-            //check if there is at least one sprite with valid sex in the set
+            let matchAll = false;
+            //check if sprite is compatable with filters
             for (let i in spriteset){
                 let sprite = spriteset[i];
-                if(sprite.sex == 0 || sprite.sex & this.character.getSex()){
-                    validSex = true;
+                let match = true
+                for(let filter in assetManager.filters){
+                    match = match && assetManager.filters[filter].match(sprite, this.character.selection);
                 }
+                matchAll = matchAll || match;
             }
             //only show if it can used for the current sex
-            if(validSex){
+            if(matchAll){
                 parent.appendChild(li);
             }else if(input.checked){
                 //check none if this was checked
@@ -195,6 +197,8 @@ class LpcGenerator {
         assetManager.onProgress = function(pending, allFiles, lastPath){
             document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
+        assetManager.loadGeneralAnimations('animations.json');
+        assetManager.loadFilters('filters.json');
         assetManager.loadList('spritesheets/');
         this.animate();
     }

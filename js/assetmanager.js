@@ -4,6 +4,7 @@
         Category = require('./category')
         Author = require('./author')
         Spritesheet = require('./spritesheet')
+        Filter = require('./filter')
         tools = require('./tools')
         XMLSerializer = require('xmldom').XMLSerializer;
     }
@@ -20,6 +21,7 @@
             this.onLoad = function(){}
             this.onProgress = function(pending, allFiles, lastPath){}
             this.baseDir = './';
+            this.filters = {};
             this.generalAnimations = {};
             this.defaultAnimation = '';
         }
@@ -78,7 +80,14 @@
             for(let i = 0; i < properties.length; i++){
                 let child = properties[i];
                 if(child.hasAttribute('name') && child.hasAttribute('value')){
-                    attributes[child.getAttribute('name')] = child.getAttribute('value');
+                    if(child.getAttribute('name').startsWith('filter_')){
+                        if(!attributes.filters)
+                            attributes.filters = {};
+                        let name = child.getAttribute('name').substring('filter_'.length)
+                        attributes.filters[name] = child.getAttribute('value');
+                    }else{
+                        attributes[child.getAttribute('name')] = child.getAttribute('value');
+                    }
                 }
             }
             // override attributes
@@ -208,7 +217,7 @@
             })
         }
 
-        //load sprite list via AJAX
+        //load animaton description via AJAX
         loadGeneralAnimations (path) {
             this.increasePending();
             let that = this;
@@ -221,6 +230,20 @@
                     let animation = that.generalAnimations[i];
                     animation.row = row;
                     row += animation.directions;
+                }
+                that.decreasePending(fullPath);
+            })
+        }
+
+        //load filter list via AJAX
+        loadFilters (path) {
+            this.increasePending();
+            let that = this;
+            let fullPath = this.baseDir + path;
+            tools.loadPlain(fullPath, function(response){
+                let filters = JSON.parse(response);
+                for(let filter of filters){
+                    that.filters[filter.name] = new Filter(filter);
                 }
                 that.decreasePending(fullPath);
             })
