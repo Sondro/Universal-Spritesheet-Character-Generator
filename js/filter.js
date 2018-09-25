@@ -7,21 +7,22 @@
             // more specific category
             this.category = json.category;
             this.values = json.values;
-            // hide asset if no condition for this filter
-            // true shows only if filter active, false shows always
-            this.mandatory = json.mandatory;
             this.default = json.default;
+            this.assume = json.assume;
         }
     
         match(sprite, selection){
             let condition = false;
             if(sprite.filters)
                 condition = sprite.filters[this.name];
+            if(!condition){
+                condition = this.assume
+                // always show those without conditions for this filter
+                if(selection.ignoreMandatory || !condition)
+                    return true;
+            }
             let value = selection[this.name];
             if(selection.ignoreFilter){
-                return true;
-            }
-            if(selection.ignoreMandatory && this.mandatory){
                 return true;
             }
             // always show sprite if sprite triggers the filter
@@ -35,33 +36,25 @@
                 if(value && !value.join(';').startsWith(this.category))
                     value = false
             }
-            if(this.mandatory && condition){
-                if(condition.toLowerCase() == 'true'){
-                    //only show if it has a value
-                    return value;
-                }else{
-                    //always show
-                    return true;
-                }
-            }
+            if(!value)
+                value = [this.name, 'none']
+            if(this.name == 'body')
+                console.log(value)
             // remove category part
-            if(value){
-                value = value[value.length-1]
-                // not specified for this sprite
-                if(!condition)
-                    return !this.mandatory
-                let index = -1;
-                for(let i in this.values){
-                    if(this.values[i] == value)
-                        index = i;
+            value = value[value.length-1]
+            // not specified for this sprite
+            if(!condition)
+                return !this.mandatory
+            let index = -1;
+            for(let i in this.values){
+                if(this.values[i] == value){
+                    index = i;
                 }
-                if(index == -1)
-                    return !condition;
-                // convert representation
-                return condition & (1 << index)
             }
-            //no value hides if it’s a condition
-            return !condition;
+            if(index == -1)
+                return !condition;
+            // convert representation
+            return condition & (1 << index)
         }
     }
     if(typeof module !== 'undefined'){

@@ -3,9 +3,9 @@
  <properties>
   <property name="author" value="nila122"/>
   <property name="category" value="ears"/>
-  <property name="filter_body" value="1"/>
-  <property name="filter_muscular" type="bool" value="false"/>
+  <property name="filter_body" type="int" value="7"/>
   <property name="filter_sex" type="int" value="1"/>
+  <property name="filter_skin" type="int" value="1"/>
   <property name="layer" type="int" value="1"/>
   <property name="license" value="GNU GPL 2.0;GNU GPL 3.0;CC BY-SA 3.0"/>
   <property name="palette" value="skin/light"/>

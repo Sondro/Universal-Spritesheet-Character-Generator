@@ -8,7 +8,7 @@
         ]
     },
     {
-        "name": "body",
+        "name": "skin",
         "default": "light",
         "values": [
             "light",
@@ -17,13 +17,13 @@
         ]
     },
     {
-        "name": "muscular",
-        "category": "body;muscular",
-        "mandatory": true
-    },
-    {
-        "name": "pregnant",
-        "category": "body;pregnant",
-        "mandatory": true
+        "name": "body",
+        "assume": 3,
+        "values": [
+            "none",
+            "normal",
+            "muscular",
+            "pregnant"
+        ]
     }
 ]
