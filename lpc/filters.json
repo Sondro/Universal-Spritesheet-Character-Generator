@@ -1,6 +1,7 @@
 [
     {
         "name": "sex",
+        "default": "male",
         "values": [
             "male",
             "female"
@@ -8,6 +9,7 @@
     },
     {
         "name": "body",
+        "default": "light",
         "values": [
             "light",
             "dark",

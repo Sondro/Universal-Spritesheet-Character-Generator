@@ -10,6 +10,7 @@
             // hide asset if no condition for this filter
             // true shows only if filter active, false shows always
             this.mandatory = json.mandatory;
+            this.default = json.default;
         }
     
         match(sprite, selection){

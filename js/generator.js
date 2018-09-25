@@ -13,13 +13,13 @@ class LpcGenerator {
             let categoryHandle = spriteset[0].category.join('.');
             input.value = categoryHandle + '.' + spriteset[0].name;
             //check if this was enabled
-            if(decodeURI(jHash.val(mainCat)) == input.value){
+            if(this.character.selection[mainCat] && this.character.selection[mainCat].join('.') == input.value){
                 input.checked = 'checked';
             }
         } else {
             input.value = 'none';
             //choose none is nothing is set
-            if(!jHash.val(mainCat)){
+            if(!this.character.selection[mainCat]){
                 input.checked = 'checked';
             }
         }
@@ -190,8 +190,7 @@ class LpcGenerator {
                         selection += name + '=' + radio.value;
                     }
                 }
-                window.location = '#?' + selection
-                lpcGenerator.drawCanvas();
+                window.location = '#?' + selection;
             }
         });
         assetManager.onLoad = function(){

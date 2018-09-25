@@ -307,6 +307,14 @@
                 tmpSel[i].push(decodeURI(split[j]))
             }
         }
+        // check filters with default values
+        // otherwise the menu would be rather empty
+        for(let f in assetManager.filters){
+            let filter = assetManager.filters[f];
+            if(filter.default && !tmpSel[f]){
+                tmpSel[f] = [f, filter.default];
+            }
+        }
         // set cheat codes
         for(let cheat of ['ignoreFilter', 'ignoreMandatory', 'incompleteAnimations']){
             if(tmpSel[cheat.toLowerCase()])
