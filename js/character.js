@@ -111,6 +111,14 @@
                     let rows = img.height / sprite.tileHeight;
                     let xoffset = (layers.tileWidth - sprite.tileWidth) / 2;
                     let yoffset = (layers.tileHeight - sprite.tileHeight) / 2;
+                    if(assetManager.allign == 'l')
+                        xoffset = 0;
+                    if(assetManager.allign == 'r')
+                        xoffset = xoffset * 2;
+                    if(assetManager.allign == 't')
+                        yoffset = 0;
+                    if(assetManager.allign == 'b')
+                        yoffset = yoffset * 2;
                     for(let c = 0; c < cols; c++){
                         for(let r = 0; r < rows; r++){
                             ctx.drawImage(img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
@@ -167,6 +175,14 @@
                 let r = assetManager.generalAnimations[animation].row;
                 let xoffset = (tileWidth - sprite.tileWidth) / 2;
                 let yoffset = (tileHeight - sprite.tileHeight) / 2;
+                if(assetManager.allign == 'l')
+                        xoffset = 0;
+                if(assetManager.allign == 'r')
+                    xoffset = xoffset * 2;
+                if(assetManager.allign == 't')
+                    yoffset = 0;
+                if(assetManager.allign == 'b')
+                    yoffset = yoffset * 2;
                 ctx.drawImage(sprite.img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
                     xoffset, yoffset, sprite.tileWidth, sprite.tileHeight);
             }

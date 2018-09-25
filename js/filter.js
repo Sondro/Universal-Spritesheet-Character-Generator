@@ -13,7 +13,9 @@
         }
     
         match(sprite, selection){
-            let condition = sprite.filters[this.name];
+            let condition = false;
+            if(sprite.filters)
+                condition = sprite.filters[this.name];
             let value = selection[this.name];
             if(selection.ignoreFilter){
                 return true;
@@ -30,7 +32,7 @@
                 value = selection[this.category.split(';')[0]]
                 // remove if it is not in the right category
                 if(value && !value.join(';').startsWith(this.category))
-                    value = undefined
+                    value = false
             }
             if(this.mandatory && condition){
                 if(condition.toLowerCase() == 'true'){
