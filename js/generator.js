@@ -169,9 +169,13 @@ class LpcGenerator {
     onLoad(){
         let lpcGenerator = this;
         document.getElementById('loading').innerText = 'loading...';
+        let buttons = document.getElementsByClassName('buttons')[0];
+        let clearButton = document.createElement('button');
+        clearButton.innerText = 'Reset all';
+        buttons.appendChild(clearButton);
         document.addEventListener('click', function(ev){
-            if(ev.target.type == 'button' && ev.target.innerHTML == 'Reset all'){
-                lpcGenerator.updateGui();
+            if(ev.target.innerText == 'Reset all'){
+                window.location = '#'
             }
             if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
                 //iterate through all categories
