@@ -38,8 +38,6 @@
             }
             if(!value)
                 value = [this.name, 'none']
-            if(this.name == 'body')
-                console.log(value)
             // remove category part
             value = value[value.length-1]
             // not specified for this sprite

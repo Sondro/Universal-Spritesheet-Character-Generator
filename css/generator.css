@@ -27,17 +27,16 @@ body{
     width: 100%;
 }
 
-#customizeChar, #preview {
+#customizeChar, #preview, #attribution {
     margin-top: 100px;
-    margin-bottom: 100px;
     overflow: auto;
     height: auto;
 }
 
-#customizeChar, .buttons {
+#customizeChar, #buttons {
     width: 30%;
 }
-#preview, #previewAnimationsBox {
+#preview, #previewAnimationsBox, #attribution {
     width: 70%;
 }
 #previewAnimationsBox {
@@ -45,16 +44,6 @@ body{
     vertical-align: top;
     align-items: flex-start;
 }
-#bottom{
-    border-top: 1px black solid;
-    height: 100px;
-    width: 100%;
-    overflow: scroll;
-    position: absolute;
-    bottom: 0px;
-    z-index: 2;
-}
-
 
 .hidden{
     display:none;

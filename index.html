@@ -28,9 +28,9 @@
   </script>
 </head>
 <body>
-  <div id="generator" class="hidden" style="height:100%">
+  <div id="generator" class="hidden">
     <div class="row" id="top">
-      <section class="buttons col-md-3"></section>
+      <section id="buttons"></section>
       <section id="previewAnimationsBox" class="col-md-5">
         Preview Animation:
         <select id="whichAnim">
@@ -39,7 +39,7 @@
       </section>
     </div>
     <div class="row" id="main">
-      <form id="customizeChar" class="col-md-3">
+      <form id="customizeChar">
         <section id="chooser">
           <header class="instr">Select from the character configuration options below.</header>
           <ul>
@@ -71,16 +71,14 @@
           </ul>
         </section>
       </form>
-      <section id="preview" class="col-md-5">
+      <section id="preview">
         <header class="instr">The complete resulting sprite sheet for your character:</header>
         <div>
           <canvas id="spritesheet" width="1" height="1">HTML5 Browser required.</canvas>
         </div>
       </section>
-    </div>
-    <div class="row" id="bottom">
-      <section id="attribution" class="col-md-8">
-        <header class="instr">Attribution:</header>
+      <section id="attribution" class="hidden">
+        <header class="instr">Attributions:</header>
         <p class="attribution"></p>
       </section>
     </div>

@@ -165,7 +165,7 @@ class LpcGenerator {
             if(layers.animations[animation]){
                 let option = document.createElement('option');
                 option.value = animation;
-                option.innerText = assetManager.generalAnimations[animation].name;
+                option.textContent = assetManager.generalAnimations[animation].name;
                 if(animation == selected)
                     option.selected = 'selected';
                 selector.appendChild(option);
@@ -177,14 +177,26 @@ class LpcGenerator {
 
     onLoad(){
         let lpcGenerator = this;
-        document.getElementById('loading').innerText = 'loading...';
-        let buttons = document.getElementsByClassName('buttons')[0];
+        document.getElementById('loading').textContent = 'loading...';
+        let buttons = document.getElementById('buttons');
         let clearButton = document.createElement('button');
-        clearButton.innerText = 'Reset all';
+        clearButton.textContent = 'Reset all';
         buttons.appendChild(clearButton);
+        let switchButton = document.createElement('button');
+        switchButton.textContent = 'Show attributions';
+        buttons.appendChild(switchButton);
         document.addEventListener('click', function(ev){
-            if(ev.target.innerText == 'Reset all'){
+            if(ev.target.textContent == 'Reset all'){
                 window.location = '#'
+            }
+            if(ev.target.textContent == 'Show attributions'){
+                ev.target.textContent = 'Show spritesheet';
+                document.getElementById('attribution').className = '';
+                document.getElementById('preview').className = 'hidden';
+            }else if(ev.target.textContent == 'Show spritesheet'){
+                ev.target.textContent = 'Show attributions';
+                document.getElementById('preview').className = '';
+                document.getElementById('attribution').className = 'hidden';
             }
             if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
                 //iterate through all categories
@@ -234,7 +246,7 @@ class LpcGenerator {
             document.getElementById('generator').className = '';
         }
         assetManager.onProgress = function(pending, allFiles, lastPath){
-            document.getElementById('loading').innerText = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
+            document.getElementById('loading').textContent = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
         assetManager.loadGeneralAnimations('animations.json');
         assetManager.loadFilters('filters.json');
