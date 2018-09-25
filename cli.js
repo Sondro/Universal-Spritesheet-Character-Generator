@@ -5,7 +5,7 @@ const Character = require('./js/character')
 let assetManager = require('./js/assetmanager')
 
 if(process.argv.length < 3){
-    console.error('example: ./cli.js --basedir=lpc/ --file=test.png --sex=sex.male --body="body.light" --legs=legs.robe%20skirt')
+    console.error('example: ./cli.js --basedir=lpc/ --file=test.png --sex=sex.male --skin="skin.light" --body="body.normal" --legs=legs.robe%20skirt')
     process.exit(1);
 }
 
