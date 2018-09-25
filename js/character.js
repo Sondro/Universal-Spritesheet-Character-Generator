@@ -9,7 +9,6 @@
             //only set for node, otherwise use  the global object
             if(am)
                 assetManager = am
-            this.sex = 1;
             this.selection = {};
             if(selection){
                 this.setSelection(selection);
@@ -34,7 +33,7 @@
         }
         //extract used assets from location bar
         let hash = this.selection;
-        for (let i in hash){ if(i != 'sex'){
+        for (let i in hash){
             let category = Array.from(hash[i]);
             let name = category.pop();
             let lastCat = assetManager.categories;
@@ -68,7 +67,7 @@
                             supportedAnimations[anim] = false;
                     }
             }
-        }}
+        }
 
         let layers = [];
         //place each spritesheet in correct layer
@@ -302,9 +301,11 @@
         let tmpSel = {};
         for (let i in selection){
             tmpSel[i] = []
-            let split = selection[i].split('.');
-            for(let j in split){
-                tmpSel[i].push(decodeURI(split[j]))
+            if(selection[i]){
+                let split = selection[i].split('.');
+                for(let j in split){
+                    tmpSel[i].push(decodeURI(split[j]))
+                }
             }
         }
         // check filters with default values

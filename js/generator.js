@@ -180,13 +180,34 @@ class LpcGenerator {
             if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
                 //iterate through all categories
                 let mainCategories = assetManager.categories.getCategories();
-                let selection = 'sex=' + document.querySelector('input[name="sex"]:checked').value;
+                let selection = '';
+                // get values for filters with no coresponding real category
+                for (let f in assetManager.filters) {
+                    // category means they will be handled by the category loop
+                    if(!assetManager.filters[f].category){
+                        let unknown = true;
+                        for(let cat of mainCategories){
+                            if(cat.name == f)
+                                unknown = false;
+                        }
+                        if(unknown){
+                            let radio = document.querySelector('input[name="' + f + '"]:checked');
+                            if(radio && radio.value != 'none'){
+                                if(selection != '')
+                                    selection += '&';
+                                selection += f + '=' + radio.value;
+                            }
+                        }
+                    }
+                }
+                // get values of real categories
                 for (let i in mainCategories) {
                     //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
                     name = mainCategories[i].name;
                     let radio = document.querySelector('input[name="' + name + '"]:checked');
                     if(radio && radio.value != 'none'){
-                        selection += '&';
+                        if(selection != '')
+                            selection += '&';
                         selection += name + '=' + radio.value;
                     }
                 }
