@@ -22,14 +22,9 @@ body{
 #main {
     display: flex;
     overflow: hidden;
-    height: 100vh;/*calc(100vh - 200px);*/
-    /*margin-top: 100px;*/
-    /* margin-top: -100px;
-    padding-top: 100px; */
+    height: 100vh;
     position: relative;
     width: 100%;
-    backface-visibility: hidden;
-    will-change: overflow;
 }
 
 #customizeChar, #preview {
@@ -39,6 +34,17 @@ body{
     height: auto;
 }
 
+#customizeChar, .buttons {
+    width: 30%;
+}
+#preview, #previewAnimationsBox {
+    width: 70%;
+}
+#previewAnimationsBox {
+    display: flex;
+    vertical-align: top;
+    align-items: flex-start;
+}
 #bottom{
     border-top: 1px black solid;
     height: 100px;
