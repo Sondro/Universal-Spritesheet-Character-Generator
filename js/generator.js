@@ -26,7 +26,9 @@ class LpcGenerator {
         input.type = 'radio'
         let label = document.createElement('label');
         label.appendChild(input);
-        label.appendChild(this.character.exportPreview(spriteset));
+        let preview = this.character.exportPreview(spriteset);
+        preview.className = 'preview';
+        label.appendChild(preview);
         label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
         li.appendChild(label);
         //assume 'none' option if invalid spriteset

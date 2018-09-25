@@ -1,0 +1,55 @@
+body{
+    overflow:hidden;
+    padding: 0;
+    margin: 0;
+} 
+
+
+#top {
+    border-bottom: 1px black solid;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    position: absolute;
+    z-index: 2;
+}
+
+#top canvas{
+    max-height: 100px;
+}
+
+
+#main {
+    display: flex;
+    overflow: hidden;
+    height: 100vh;/*calc(100vh - 200px);*/
+    /*margin-top: 100px;*/
+    /* margin-top: -100px;
+    padding-top: 100px; */
+    position: relative;
+    width: 100%;
+    backface-visibility: hidden;
+    will-change: overflow;
+}
+
+#customizeChar, #preview {
+    margin-top: 100px;
+    margin-bottom: 100px;
+    overflow: auto;
+    height: auto;
+}
+
+#bottom{
+    border-top: 1px black solid;
+    height: 100px;
+    width: 100%;
+    overflow: scroll;
+    position: absolute;
+    bottom: 0px;
+    z-index: 2;
+}
+
+
+.hidden{
+    display:none;
+}
