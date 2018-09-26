@@ -27,7 +27,7 @@
             this.supportedAnimations = {}
             let that = this;
             //load one after the other
-            tools.loadImage(this.src, width,  height, function(img){
+            tools.loadImage(this.src, assetManager.cache, width,  height, function(img){
                 that.img = img
                 that.remap(animations, assetManager.generalAnimations)
                 if(palette && attributes['palette']){
@@ -42,7 +42,6 @@
                 }else{
                     if(loadcallback)loadcallback();
                 }
-                //AssetManager.updateGui;
             });
         }
 

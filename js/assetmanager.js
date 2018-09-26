@@ -28,6 +28,8 @@
             this.ignoreFilter = false;
             this.ignoreMandatory = false;
             this.incompleteAnimations = false;
+            // for caching files
+            this.cache = {}
         }
 
 
@@ -39,7 +41,7 @@
             let dirPath = dirArr.join('/');
             let that = this;
             let fullPath = this.baseDir + path
-            tools.loadXML(fullPath, function(response) {
+            tools.loadXML(fullPath, this.cache, function(response) {
 
                 let properties = response.getElementsByTagName('properties')[0].getElementsByTagName('property');
                 let animationReference = "";
@@ -57,7 +59,7 @@
                 }else{
                     that.increasePending();
                     fullPath = that.baseDir + dirPath + '/' + animationReference;
-                    tools.loadXML(fullPath, function(resp) {
+                    tools.loadXML(fullPath, that.cache, function(resp) {
                         let tiles = resp.getElementsByTagName('tile');
                         // since nested always pending > 1
                         that.decreasePending(animationReference);
@@ -191,7 +193,7 @@
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + 'authors/' + name + '.json'
-            tools.loadPlain(fullPath, function(response){
+            tools.loadPlain(fullPath, this.cache, function(response){
                 //convert to json and iterate through the array
                 var author = JSON.parse(response);
                 if(!that.authors[name])
@@ -206,7 +208,7 @@
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + 'palettes/' + path + '.gpl';
-            tools.loadPlain(fullPath, function(response){
+            tools.loadPlain(fullPath, this.cache, function(response){
                 let content = response.split("\n");
                 let colors = [];
                 for(let i in content){
@@ -232,7 +234,7 @@
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + path;
-            tools.loadPlain(fullPath, function(response){
+            tools.loadPlain(fullPath, this.cache, function(response){
                 that.generalAnimations = JSON.parse(response);
                 // take note of the rows of the animations
                 let row = 0;
@@ -250,7 +252,7 @@
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + path;
-            tools.loadPlain(fullPath, function(response){
+            tools.loadPlain(fullPath, this.cache, function(response){
                 let filters = JSON.parse(response);
                 for(let filter of filters){
                     that.filters[filter.name] = new Filter(filter);
@@ -264,7 +266,7 @@
             this.increasePending();
             let that = this;
             let fullPath = this.baseDir + path + file;
-            tools.loadPlain(fullPath, function(response){
+            tools.loadPlain(fullPath, this.cache, function(response){
                 //convert to json and iterate through the array
                 var list = JSON.parse(response);
                 // list with meta data
