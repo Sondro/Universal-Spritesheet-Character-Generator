@@ -8,7 +8,20 @@
         path = require('path');
     }
 
-    exports.loadXML = function(file, cache, callback){
+    exports.normalizePath =  function(path){
+        //return path;
+        let tmp = path.replace('/./','/');
+        // /foo/../
+        let regex = /\/[^(\.\.)\/]*\/\.\.\//g
+        // replace as long as it can be found
+        while(tmp.match(regex)){
+            tmp = tmp.replace(regex,'/');
+        }
+        return tmp;
+    }
+
+    exports.loadXML = function(longFile, cache, callback){
+        let file = exports.normalizePath(longFile)
         if(cache[file]){
             callback(cache[file]);
         }else{
@@ -41,7 +54,8 @@
         }
     }
     
-    exports.loadPlain = function(file, cache, callback){
+    exports.loadPlain = function(longFile, cache, callback){
+        let file = exports.normalizePath(longFile)
         if(cache[file]){
             callback(cache[file]);
         }else{
@@ -74,7 +88,8 @@
         }
     }
     
-    exports.loadImage = function(file, cache, width, height, callback){
+    exports.loadImage = function(longFile, cache, width, height, callback){
+        let file = exports.normalizePath(longFile)
         if(cache[file]){
             callback(cache[file]);
         }else{
