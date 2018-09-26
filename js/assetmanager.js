@@ -70,6 +70,7 @@
         }
 
         loadTsxParser (path,  dirPath, override, xml, tiles) {
+            let that = this;
             let tileset = xml.getElementsByTagName('tileset')[0];
             let image = xml.getElementsByTagName('image')[0];
             let name = (override.name ? override.name : tileset.getAttribute('name'))
@@ -162,7 +163,6 @@
                     }
                 }
             }
-            let tmpSprite = new Spritesheet((override.name ? override.name : name), src, width, height, tileWidth, tileHeight, attributes, override.palette, undefined, this, animations);
             //manage categories
             let categories = attributes['category'].split(';');
             //go through all categories and add them if neccessary
@@ -173,6 +173,7 @@
                 }
                 lastCat = lastCat.getCategory(categories[i]);
             }
+            let tmpSprite = new Spritesheet(name, src, width, height, tileWidth, tileHeight, attributes, override.palette, function(){that.decreasePending(path)}, this, animations);
             //add sprite to latest category
             lastCat.addSprite(tmpSprite);
             //manage authors
@@ -185,7 +186,6 @@
                     this.authors[authors[i]].addSprite(tmpSprite);
                 }
             }
-            this.decreasePending(path);
         }
 
         //load author via AJAX
@@ -320,8 +320,10 @@
         decreasePending(lastPath){
             this.pending--;
             this.onProgress(this.pending, this.allFiles, lastPath)
-            if(this.pending <= 0)
+            if(this.pending <= 0){
+                delete this.cache;
                 this.onLoad();
+            }
         }
     }
     
