@@ -33,11 +33,11 @@
                 if(palette && attributes['palette']){
                     assetManager.loadPalette(palette, function(p){
                         that.newPalette = p;
-                        that.switchPalette(loadcallback);
+                        that.switchPalette(assetManager.generalAnimations, loadcallback);
                     })
                     assetManager.loadPalette(attributes['palette'], function(p){
                         that.oldPalette = p;
-                        that.switchPalette(loadcallback);
+                        that.switchPalette(assetManager.generalAnimations, loadcallback);
                     })
                 }else{
                     if(loadcallback)loadcallback();
@@ -112,7 +112,8 @@
         }
 
         //change color palette of image
-        switchPalette(loadcallback) {
+        //only switch pixels that are actually seen later
+        switchPalette(generalAnimations, loadcallback) {
             if(this.oldPalette && this.newPalette){
                 let can = tools.createCanvas(this.img.width, this.img.height)
                 let ctx = can.getContext('2d');
@@ -123,16 +124,30 @@
                 if(size > this.newPalette.length){
                     size = this.newPalette.length;
                 }
+                // coordinates are easier to use
                 for(let i = 0; i < size; i++){
-                    // one dimensional array with RGBA
-                    for(let j = 0; j < imageData.data.length; j+=4){
-                        if(imageData.data[j] == this.oldPalette[i].red
-                        && imageData.data[j+1] == this.oldPalette[i].green
-                        && imageData.data[j+2] == this.oldPalette[i].blue){
-                            imageData.data[j] = this.newPalette[i].red
-                            imageData.data[j+1] = this.newPalette[i].green
-                            imageData.data[j+2] = this.newPalette[i].blue  
+                    let yoffset = 0;
+                    for(let anim in generalAnimations){
+                        let animHeight = generalAnimations[anim].directions * this.tileHeight;
+                        let animWidth = generalAnimations[anim].frames * this.tileHeight;
+                        // skip if not supported
+                        if(this.supportedAnimations[anim]){
+                            // loop through animation
+                            for(let y = 0; y < animHeight; y++){
+                                for(let x = 0; x < animWidth; x++){
+                                    // y is vertical, each pixel has RGBA
+                                    let position = (x + ( (y + yoffset) * can.width)) * 4;
+                                    if(imageData.data[position] == this.oldPalette[i].red
+                                    && imageData.data[position+1] == this.oldPalette[i].green
+                                    && imageData.data[position+2] == this.oldPalette[i].blue){
+                                        imageData.data[position] = this.newPalette[i].red
+                                        imageData.data[position+1] = this.newPalette[i].green
+                                        imageData.data[position+2] = this.newPalette[i].blue  
+                                    }
+                                }
+                            }
                         }
+                        yoffset += animHeight;
                     }
                 }
                 ctx.putImageData(imageData,0,0);

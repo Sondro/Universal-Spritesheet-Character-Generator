@@ -138,7 +138,7 @@
                     }
                 }
                 // skip tiles with incomplete properties
-                if(direction >= 0 && animation != ''){
+                if(direction >= 0 && animation != '' && this.generalAnimations[animation]){
                     if(!animations[animation]){
                         animations[animation] = {} 
                     }
