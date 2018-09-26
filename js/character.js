@@ -13,7 +13,7 @@
             if(selection){
                 this.setSelection(selection);
             }
-            this.img = undefined;
+            this.img = tools.createCanvas(1, 1);;
             this.tileHeight = 0;
             this.tileWidth = 0;
         }
@@ -97,8 +97,9 @@
 
     redraw(){
         let layers = this.getLayers();
-        let canvas = tools.createCanvas(layers.width, layers.height);
-        let ctx = canvas.getContext('2d');
+        this.img.width = layers.width;
+        this.img.height = layers.height;
+        let ctx = this.img.getContext('2d');
         for (let layer in layers.layers){
             for (let s in layers.layers[layer]){
                 let sprite = layers.layers[layer][s]
@@ -127,7 +128,6 @@
                 }
             }
         }
-        this.img = canvas;
         this.tileHeight = layers.tileHeight;
         this.tileWidth = layers.tileWidth;
     }
@@ -187,12 +187,6 @@
             }
         }
         return canvas;
-    }
-
-    // position must be >0, gets limited with modulo
-    getFrame(animation, direction, position){
-        let can = tools.createCanvas(1, 1);
-        return can;
     }
 
     generateAttribution(syntax){

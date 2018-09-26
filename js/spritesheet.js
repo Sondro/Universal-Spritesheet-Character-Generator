@@ -69,8 +69,11 @@
                         let frames = animations[i].mapping[direction]
                         for(let frame in frames){
                             if(frame){
-                                // move tile to new position
-                                ctx.drawImage(this.getTile(frames[frame]), frame * this.tileWidth, row * this.tileHeight)
+                                // copy tile to new position
+                                let index = frames[frame];
+                                let x = (index * this.tileWidth) % this.img.width;
+                                let y = Math.floor((index * this.tileWidth) / this.img.width) * this.tileHeight;
+                                ctx.drawImage(this.img, x, y, this.tileWidth, this.tileHeight, frame * this.tileWidth, row * this.tileHeight, this.tileWidth, this.tileHeight)
                             }
                         }
                     }
@@ -79,16 +82,8 @@
                 }
             }
             //replace image
+            delete this.img;
             this.img = canvas;
-        }
-
-        getTile(index){
-            let canvas = tools.createCanvas(this.tileWidth, this.tileHeight)
-            let x = (index * this.tileWidth) % this.img.width;
-            let y = Math.floor((index * this.tileWidth) / this.img.width) * this.tileHeight;
-            let ctx = canvas.getContext('2d');
-            ctx.drawImage(this.img, -x, -y)
-            return canvas
         }
 
         //use red channel of mask image as alpha channel
@@ -108,16 +103,16 @@
             }
             ctx.putImageData(imageData,0,0);
             this.img = can;
-            //lpcGenerator.updateGui;
         }
 
         //change color palette of image
         //only switch pixels that are actually seen later
         switchPalette(generalAnimations, loadcallback) {
             if(this.oldPalette && this.newPalette){
-                let can = tools.createCanvas(this.img.width, this.img.height)
+                let can = this.img;
+                if(!can.getContext)
+                    can = tools.cloneImg(this.img);
                 let ctx = can.getContext('2d');
-                ctx.drawImage(this.img, 0, 0)
                 let imageData = ctx.getImageData(0, 0, this.img.width, this.img.height);
                 //always choose the smallest size
                 let size = this.oldPalette.length;
