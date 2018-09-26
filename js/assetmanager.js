@@ -59,6 +59,7 @@
                     fullPath = that.baseDir + dirPath + '/' + animationReference;
                     tools.loadXML(fullPath, function(resp) {
                         let tiles = resp.getElementsByTagName('tile');
+                        // since nested always pending > 1
                         that.decreasePending(animationReference);
                         that.loadTsxParser(path, dirPath, override, response, tiles);
                     })
@@ -259,10 +260,10 @@
         }
 
         //load sprite list via AJAX
-        loadList (path, listOverride={}) {
+        loadList (path, file = 'list.json', listOverride={}) {
             this.increasePending();
             let that = this;
-            let fullPath = this.baseDir + path + 'list.json';
+            let fullPath = this.baseDir + path + file;
             tools.loadPlain(fullPath, function(response){
                 //convert to json and iterate through the array
                 var list = JSON.parse(response);
@@ -290,8 +291,14 @@
                         //for palette changing
                         that.loadTsx(filePath, override);
                     }
+                    if (filePath.split('.').pop() == 'json') {
+                        let file = filePath.split('/').pop()
+                        let path = filePath.replace(/\/[^\/]*$/mg,'/')
+                        console.log(path, file)
+                        that.loadList(path, file, override);
+                    }
                     if (filePath[filePath.length - 1] == '/') {
-                        that.loadList(filePath, override);
+                        that.loadList(filePath, 'list.json', override);
                     }
                     //ignore exerything else
                 }
