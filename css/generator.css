@@ -1,9 +1,8 @@
-body{
-    overflow:hidden;
+body {
+    overflow: hidden;
     padding: 0;
     margin: 0;
-} 
-
+}
 
 #top {
     border-bottom: 1px black solid;
@@ -14,10 +13,9 @@ body{
     z-index: 2;
 }
 
-#top canvas{
+#top canvas {
     max-height: 100px;
 }
-
 
 #main {
     display: flex;
@@ -27,29 +25,36 @@ body{
     width: 100%;
 }
 
-#customizeChar, #preview, #attribution {
+#customizeChar,
+#preview,
+#attribution {
     margin-top: 100px;
     overflow: auto;
     height: auto;
 }
 
-#customizeChar, #buttons {
+#customizeChar,
+#buttons {
     width: 30%;
 }
-#preview, #previewAnimationsBox, #attribution {
+
+#preview,
+#previewAnimationsBox,
+#attribution {
     width: 70%;
 }
+
 #previewAnimationsBox {
     display: flex;
     vertical-align: top;
     align-items: flex-start;
 }
 
-.hidden{
-    display:none;
+.hidden {
+    display: none;
 }
 
-.box{
+.box {
     display: inline-block;
     height: 16px;
     width: 16px;

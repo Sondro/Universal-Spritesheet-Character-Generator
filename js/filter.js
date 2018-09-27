@@ -1,7 +1,7 @@
-(function(exports){
+(function (exports) {
     class Filter {
 
-        constructor(json){
+        constructor(json) {
             // sub category
             this.name = json.name;
             // more specific category
@@ -10,55 +10,55 @@
             this.default = json.default;
             this.assume = json.assume;
         }
-    
-        match(sprite, selection){
+
+        match(sprite, selection) {
             let condition = false;
-            if(sprite.filters)
+            if (sprite.filters)
                 condition = sprite.filters[this.name];
-            if(!condition){
+            if (!condition) {
                 condition = this.assume
                 // always show those without conditions for this filter
-                if(selection.ignoreMandatory || !condition)
+                if (selection.ignoreMandatory || !condition)
                     return true;
             }
             let value = selection[this.name];
-            if(selection.ignoreFilter){
+            if (selection.ignoreFilter) {
                 return true;
             }
             // always show sprite if sprite triggers the filter
-            if((this.category && this.category.split(';')[0] == sprite.category[0]) || this.name == sprite.category[0]){
+            if ((this.category && this.category.split(';')[0] == sprite.category[0]) || this.name == sprite.category[0]) {
                 return true;
             }
             // use category instead of name
-            if(this.category){
+            if (this.category) {
                 value = selection[this.category.split(';')[0]]
                 // remove if it is not in the right category
-                if(value && !value.join(';').startsWith(this.category))
+                if (value && !value.join(';').startsWith(this.category))
                     value = false
             }
-            if(!value)
+            if (!value)
                 value = [this.name, 'none']
             // remove category part
-            value = value[value.length-1]
+            value = value[value.length - 1]
             // not specified for this sprite
-            if(!condition)
+            if (!condition)
                 return !this.mandatory
             let index = -1;
-            for(let i in this.values){
-                if(this.values[i] == value){
+            for (let i in this.values) {
+                if (this.values[i] == value) {
                     index = i;
                 }
             }
-            if(index == -1)
+            if (index == -1)
                 return !condition;
             // convert representation
             return condition & (1 << index)
         }
     }
-    if(typeof module !== 'undefined'){
+    if (typeof module !== 'undefined') {
         //node
         module.exports = Filter;
-    }else{
+    } else {
         // browser
         this['Filter'] = Filter;
     }

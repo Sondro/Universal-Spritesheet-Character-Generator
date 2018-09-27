@@ -2,14 +2,14 @@
     "body/",
     {
         "file": "body/",
-        "filters":{
+        "filters": {
             "skin": "2"
         },
         "palette": "skin/dark"
     },
     {
         "file": "body/",
-        "filters":{
+        "filters": {
             "skin": "4"
         },
         "palette": "skin/darkelf"

@@ -1,20 +1,20 @@
-(function(exports){
+(function (exports) {
     class Author {
 
-        constructor(name, url){
+        constructor(name, url) {
             this.name = name;
             this.url = url;
             this.sprites = []
         }
-    
-        addSprite(ss){
+
+        addSprite(ss) {
             this.sprites.push(ss);
         }
     }
-    if(typeof module !== 'undefined'){
+    if (typeof module !== 'undefined') {
         //node
         module.exports = Author;
-    }else{
+    } else {
         // browser
         this['Author'] = Author;
     }

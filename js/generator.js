@@ -1,25 +1,25 @@
 class LpcGenerator {
-    constructor(character){
+    constructor(character) {
         this.character = character;
         this.counter = 0;
     }
 
-    drawSprite(parent, mainCat, spriteset){
+    drawSprite(parent, mainCat, spriteset) {
         let li = document.createElement('li');
         let input = document.createElement('input');
         input.name = mainCat;
         //assume 'none' option if invalid spriteset
-        if(spriteset){
+        if (spriteset) {
             let categoryHandle = spriteset[0].category.join('.');
             input.value = categoryHandle + '.' + spriteset[0].name;
             //check if this was enabled
-            if(this.character.selection[mainCat] && this.character.selection[mainCat].join('.') == input.value){
+            if (this.character.selection[mainCat] && this.character.selection[mainCat].join('.') == input.value) {
                 input.checked = 'checked';
             }
         } else {
             input.value = 'none';
             //choose none is nothing is set
-            if(!this.character.selection[mainCat]){
+            if (!this.character.selection[mainCat]) {
                 input.checked = 'checked';
             }
         }
@@ -30,51 +30,51 @@ class LpcGenerator {
         preview.className = 'preview';
         label.appendChild(preview);
         let name = 'None';
-        if(spriteset){
-            name = spriteset[0].name.replace('_',' ');
+        if (spriteset) {
+            name = spriteset[0].name.replace('_', ' ');
             //capitalize first character
             name = name.charAt(0).toUpperCase() + name.substring(1)
         }
         label.appendChild(document.createTextNode(name));
         li.appendChild(label);
         //assume 'none' option if invalid spriteset
-        if(spriteset){
+        if (spriteset) {
             let matchAll = false;
             //check if sprite is compatable with filters
-            for (let i in spriteset){
+            for (let i in spriteset) {
                 let sprite = spriteset[i];
                 let match = true
-                for(let filter in assetManager.filters){
+                for (let filter in assetManager.filters) {
                     match = match && assetManager.filters[filter].match(sprite, this.character.selection);
                 }
                 matchAll = matchAll || match;
             }
             //only show if filters match
-            if(matchAll){
+            if (matchAll) {
                 parent.appendChild(li);
-            }else if(input.checked){
+            } else if (input.checked) {
                 //check none if this was checked
                 document.querySelector('input[name="' + mainCat + '"][value="none"]').checked = 'checked';
             }
-        }else{
+        } else {
             parent.appendChild(li);
         }
     }
 
     //generate html list for category recursively
-    drawCategory(parent, mainCat, category){
+    drawCategory(parent, mainCat, category) {
         let li = document.createElement('li');
         let ul = document.createElement('ul');
         ul.style = 'display:block;'
         let span = document.createElement('span');
-        let name = category.name.replace('_',' ');
+        let name = category.name.replace('_', ' ');
         //capitalize first character
         name = name.charAt(0).toUpperCase() + name.substring(1);
         span.appendChild(document.createTextNode(name));
         span.className = 'expanded';
         li.appendChild(span);
         li.appendChild(ul);
-        if(mainCat == category.name){
+        if (mainCat == category.name) {
             //create empty option
             this.drawSprite(ul, mainCat);
         }
@@ -89,16 +89,16 @@ class LpcGenerator {
             this.drawCategory(ul, mainCat, children[i])
         }
         //hide empty categories
-        if(ul.childElementCount == 0){
+        if (ul.childElementCount == 0) {
             parent.removeChild(li);
         }
         //hide main categories that only contain none
-        if(ul.childElementCount == 1 && mainCat == category.name){
+        if (ul.childElementCount == 1 && mainCat == category.name) {
             parent.removeChild(li);
         }
     }
 
-    drawCanvas(){
+    drawCanvas() {
         let canvas = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
         this.character.redraw();
@@ -109,49 +109,49 @@ class LpcGenerator {
         ctx.drawImage(drawn, 0, 0);
     }
 
-    generateAttribution(syntax){
+    generateAttribution(syntax) {
         let attribution = document.getElementById('attribution').getElementsByClassName('attribution')[0];
         attribution.innerHTML = this.character.generateAttribution('html');
     }
 
-    animate(){
+    animate() {
         let canvas = document.getElementById('previewAnimations');
         let spritesheet = document.getElementById('spritesheet');
         let ctx = canvas.getContext('2d');
         let selector = document.getElementById('whichAnim');
-        if(selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0){
+        if (selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0) {
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];
-            if(animation){
+            if (animation) {
                 canvas.width = this.character.tileWidth * animation.directions;
                 canvas.height = this.character.tileHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let position = this.counter%animation.frames;
+                let position = this.counter % animation.frames;
                 let x = position * this.character.tileWidth;
-                for(let i = 0; i < animation.directions; i++){
-                    let y = (i+animation.row) * this.character.tileHeight;
+                for (let i = 0; i < animation.directions; i++) {
+                    let y = (i + animation.row) * this.character.tileHeight;
                     ctx.drawImage(spritesheet, x, y, this.character.tileWidth, this.character.tileHeight, i * this.character.tileWidth, 0, this.character.tileWidth, this.character.tileHeight);
                 }
-            }else{
+            } else {
                 canvas.width = canvas.height = 1;
             }
             this.counter++;
-        }else{
+        } else {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         let that = this;
-        window.setTimeout(function(){that.animate()}, 1000/8)
+        window.setTimeout(function () { that.animate() }, 1000 / 8)
     }
 
-    updateGui(){
+    updateGui() {
         let mainList = document.getElementById('chooser').getElementsByTagName('ul')[0];
         let layers = this.character.getLayers();
         let selector = document.getElementById('whichAnim');
         let selected = assetManager.defaultAnimation;
-        if(selector.selectedIndex >= 0)
+        if (selector.selectedIndex >= 0)
             selected = selector.options[selector.selectedIndex].value;
         //remove all children but those in the 'keep' class
-        while (mainList.lastChild && (!mainList.lastChild.className || !mainList.lastChild.className.match(/.*keep.*/) )) {
+        while (mainList.lastChild && (!mainList.lastChild.className || !mainList.lastChild.className.match(/.*keep.*/))) {
             mainList.removeChild(mainList.lastChild)
         }
         while (selector.lastChild) {
@@ -162,7 +162,7 @@ class LpcGenerator {
         for (let s in this.character.selection) {
             let value = this.character.selection[s].join('.');
             let radio = document.querySelector('input[name="' + s + '"][value="' + value + '"]')
-            if(radio)
+            if (radio)
                 radio.checked = 'checked';
         }
         let mainCategories = assetManager.categories.getCategories();
@@ -170,12 +170,12 @@ class LpcGenerator {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
         //let radio = document.querySelector('input[name="' + f + '"]:checked')
-        for (let animation in assetManager.generalAnimations){
-            if(layers.animations[animation]){
+        for (let animation in assetManager.generalAnimations) {
+            if (layers.animations[animation]) {
                 let option = document.createElement('option');
                 option.value = animation;
                 option.textContent = assetManager.generalAnimations[animation].name;
-                if(animation == selected)
+                if (animation == selected)
                     option.selected = 'selected';
                 selector.appendChild(option);
             }
@@ -184,7 +184,7 @@ class LpcGenerator {
         this.generateAttribution();
     }
 
-    onLoad(){
+    onLoad() {
         let lpcGenerator = this;
         document.getElementById('loading').textContent = 'loading...';
         let buttons = document.getElementById('buttons');
@@ -194,36 +194,36 @@ class LpcGenerator {
         let switchButton = document.createElement('button');
         switchButton.textContent = 'Show attributions';
         buttons.appendChild(switchButton);
-        document.addEventListener('click', function(ev){
-            if(ev.target.textContent == 'Reset all'){
+        document.addEventListener('click', function (ev) {
+            if (ev.target.textContent == 'Reset all') {
                 window.location = '#'
             }
-            if(ev.target.textContent == 'Show attributions'){
+            if (ev.target.textContent == 'Show attributions') {
                 ev.target.textContent = 'Show spritesheet';
                 document.getElementById('attribution').className = '';
                 document.getElementById('preview').className = 'hidden';
-            }else if(ev.target.textContent == 'Show spritesheet'){
+            } else if (ev.target.textContent == 'Show spritesheet') {
                 ev.target.textContent = 'Show attributions';
                 document.getElementById('preview').className = '';
                 document.getElementById('attribution').className = 'hidden';
             }
-            if(ev.target.nodeName == 'INPUT' && ev.target.type == 'radio'){
+            if (ev.target.nodeName == 'INPUT' && ev.target.type == 'radio') {
                 //iterate through all categories
                 let mainCategories = assetManager.categories.getCategories();
                 let selection = '';
                 // get values for filters with no coresponding real category
                 for (let f in assetManager.filters) {
                     // category means they will be handled by the category loop
-                    if(!assetManager.filters[f].category){
+                    if (!assetManager.filters[f].category) {
                         let unknown = true;
-                        for(let cat of mainCategories){
-                            if(cat.name == f)
+                        for (let cat of mainCategories) {
+                            if (cat.name == f)
                                 unknown = false;
                         }
-                        if(unknown){
+                        if (unknown) {
                             let radio = document.querySelector('input[name="' + f + '"]:checked');
-                            if(radio && radio.value != 'none'){
-                                if(selection != '')
+                            if (radio && radio.value != 'none') {
+                                if (selection != '')
                                     selection += '&';
                                 selection += f + '=' + radio.value;
                             }
@@ -235,8 +235,8 @@ class LpcGenerator {
                     //this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
                     name = mainCategories[i].name;
                     let radio = document.querySelector('input[name="' + name + '"]:checked');
-                    if(radio && radio.value != 'none'){
-                        if(selection != '')
+                    if (radio && radio.value != 'none') {
+                        if (selection != '')
                             selection += '&';
                         selection += name + '=' + radio.value;
                     }
@@ -244,8 +244,8 @@ class LpcGenerator {
                 window.location = '#?' + selection;
             }
         });
-        assetManager.onLoad = function(){
-            jHash.change(function() {
+        assetManager.onLoad = function () {
+            jHash.change(function () {
                 lpcGenerator.character.setSelection(jHash.val());
                 lpcGenerator.updateGui();
             });
@@ -254,7 +254,7 @@ class LpcGenerator {
             document.getElementById('loading').className = 'hidden';
             document.getElementById('generator').className = '';
         }
-        assetManager.onProgress = function(pending, allFiles, lastPath){
+        assetManager.onProgress = function (pending, allFiles, lastPath) {
             document.getElementById('loading').textContent = 'loading... (' + (allFiles - pending) + '/' + allFiles + ')';
         }
         assetManager.loadGeneralAnimations('animations.json');
