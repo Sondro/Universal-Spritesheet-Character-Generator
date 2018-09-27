@@ -40,6 +40,23 @@
                 value = [this.name, 'none']
             // remove category part
             value = value[value.length - 1]
+
+            // convert string to int
+            // 'none;muscular' -> 1|4
+            if(Number.isNaN(parseInt(condition, 10))){
+                let num = 0;
+                let conditions = condition.split(';')
+                for(let cond of conditions){
+                    for(let v in this.values){
+                        if(cond == this.values[v]){
+                            num |= 1<<v;
+                        }
+                    }
+                }
+                condition = num;
+            }
+
+
             // not specified for this sprite
             if (!condition)
                 return !this.mandatory

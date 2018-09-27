@@ -31,7 +31,7 @@ class LpcGenerator {
         label.appendChild(preview);
         let name = 'None';
         if (spriteset) {
-            name = spriteset[0].name.replace('_', ' ');
+            name = spriteset[0].name.replace(/_/g, ' ');
             //capitalize first character
             name = name.charAt(0).toUpperCase() + name.substring(1)
         }

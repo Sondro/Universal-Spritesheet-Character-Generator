@@ -3,7 +3,7 @@
  <properties>
   <property name="author" value="redshrike"/>
   <property name="category" value="body"/>
-  <property name="filter_sex" type="int" value="1"/>
+  <property name="filter_sex" value="male"/>
   <property name="filter_skin" type="int" value="1"/>
   <property name="layer" type="int" value="0"/>
   <property name="license" value="GNU GPL 3.0;CC BY-SA 3.0"/>
