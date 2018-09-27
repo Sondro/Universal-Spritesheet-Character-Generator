@@ -29,7 +29,13 @@ class LpcGenerator {
         let preview = this.character.exportPreview(spriteset);
         preview.className = 'preview';
         label.appendChild(preview);
-        label.appendChild(document.createTextNode(spriteset ? spriteset[0].name : 'none'));
+        let name = 'None';
+        if(spriteset){
+            name = spriteset[0].name.replace('_',' ');
+            //capitalize first character
+            name = name.charAt(0).toUpperCase() + name.substring(1)
+        }
+        label.appendChild(document.createTextNode(name));
         li.appendChild(label);
         //assume 'none' option if invalid spriteset
         if(spriteset){
@@ -61,7 +67,10 @@ class LpcGenerator {
         let ul = document.createElement('ul');
         ul.style = 'display:block;'
         let span = document.createElement('span');
-        span.appendChild(document.createTextNode(category.name));
+        let name = category.name.replace('_',' ');
+        //capitalize first character
+        name = name.charAt(0).toUpperCase() + name.substring(1);
+        span.appendChild(document.createTextNode(name));
         span.className = 'expanded';
         li.appendChild(span);
         li.appendChild(ul);
@@ -76,7 +85,7 @@ class LpcGenerator {
             this.drawSprite(ul, mainCat, sprites[i])
         }
         let children = category.getCategories();
-        for (let i in children) {            //TODO: load author JSON
+        for (let i in children) {
             this.drawCategory(ul, mainCat, children[i])
         }
         //hide empty categories
