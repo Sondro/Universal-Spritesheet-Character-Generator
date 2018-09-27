@@ -13,7 +13,6 @@
             if (selection) {
                 this.setSelection(selection);
             }
-            this.img = tools.createCanvas(1, 1);
             this.tileHeight = 0;
             this.tileWidth = 0;
             // each animation has their own image
@@ -100,9 +99,6 @@
 
         redraw() {
             let layers = this.getLayers();
-            this.img.width = layers.width;
-            this.img.height = layers.height;
-            let ctx = this.img.getContext('2d');
 
             // create all missing canvases
             // constructor runs before animations got read
@@ -199,38 +195,29 @@
                     }
                 }
             }
+        }
 
-            // draw this.img
-            for (let layer in layers.layers) {
-                for (let s in layers.layers[layer]) {
-                    let sprite = layers.layers[layer][s]
-                    let img = sprite.img
-                    if (sprite.tileWidth == layers.tileWidth && sprite.tileHeight == layers.tileHeight) {
-                        ctx.drawImage(sprite.img, 0, 0)
-                    } else {
-                        let cols = img.width / sprite.tileWidth;
-                        let rows = img.height / sprite.tileHeight;
-                        let xoffset = (layers.tileWidth - sprite.tileWidth) / 2;
-                        let yoffset = (layers.tileHeight - sprite.tileHeight) / 2;
-                        if (assetManager.allign == 'l')
-                            xoffset = 0;
-                        if (assetManager.allign == 'r')
-                            xoffset = xoffset * 2;
-                        if (assetManager.allign == 't')
-                            yoffset = 0;
-                        if (assetManager.allign == 'b')
-                            yoffset = yoffset * 2;
-                        for (let c = 0; c < cols; c++) {
-                            for (let r = 0; r < rows; r++) {
-                                ctx.drawImage(img, c * sprite.tileWidth, r * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
-                                    c * layers.tileWidth + xoffset, r * layers.tileHeight + yoffset, sprite.tileWidth, sprite.tileHeight);
-                            }
-                        }
-                    }
+        // compose all images into one
+        exportComposed(){
+            let width = 0;
+            let height = 0;
+            for (let anim in this.animations) {
+                if(this.animations[anim].className != 'hidden'){
+                    if(this.animations[anim].width > width)
+                        width = this.animations[anim].width
+                    height += this.animations[anim].height;
                 }
             }
-            this.tileHeight = layers.tileHeight;
-            this.tileWidth = layers.tileWidth;
+            let canvas = tools.createCanvas(width, height);
+            let ctx = canvas.getContext('2d');
+            let offset = 0;
+            for (let anim in this.animations) {
+                if(this.animations[anim].className != 'hidden'){
+                    ctx.drawImage(this.animations[anim], 0, offset)
+                    offset += this.animations[anim].height;
+                }
+            }
+            return canvas;
         }
 
         // export preview canvas of spriteset

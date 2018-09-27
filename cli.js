@@ -21,7 +21,11 @@ function delayed(){
     }
     let c = new Character(selection, assetManager);
     c.redraw();
-    let drawn = c.img;
+    let drawn = c.exportComposed();
+    if(drawn.height < 1 || drawn.width < 1){
+        console.error('The generated image is empty')
+        drawn.height = drawn.width = 1;
+    }
     let image = file;
     if(!path.isAbsolute(image))
         image = path.join(process.cwd(), image);

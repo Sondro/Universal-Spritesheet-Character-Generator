@@ -123,19 +123,21 @@ class LpcGenerator {
         let canvas = document.getElementById('previewAnimations');
         let ctx = canvas.getContext('2d');
         let selector = document.getElementById('whichAnim');
-        if (selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0) {
+        if (selector.selectedIndex >= 0) {
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];
             if (animation) {
                 let spritesheet = this.character.animations[selected];
-                canvas.width = this.character.tileWidth * animation.directions;
-                canvas.height = this.character.tileHeight;
+                let tileHeight = spritesheet.height / animation.directions;
+                let tileWidth = spritesheet.width / animation.frames;
+                canvas.width = tileWidth * animation.directions;
+                canvas.height = tileHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let position = this.counter % animation.frames;
-                let x = position * this.character.tileWidth;
+                let x = position * tileWidth;
                 for (let i = 0; i < animation.directions; i++) {
-                    let y = i * this.character.tileHeight;
-                    ctx.drawImage(spritesheet, x, y, this.character.tileWidth, this.character.tileHeight, i * this.character.tileWidth, 0, this.character.tileWidth, this.character.tileHeight);
+                    let y = i * tileHeight;
+                    ctx.drawImage(spritesheet, x, y, tileWidth, tileHeight, i * tileWidth, 0, tileWidth, tileHeight);
                 }
             } else {
                 canvas.width = canvas.height = 1;
