@@ -28,6 +28,7 @@
             this.ignoreFilter = false;
             this.ignoreMandatory = false;
             this.incompleteAnimations = false;
+            this.showGrid = false;
             // for caching files
             this.cache = {}
         }

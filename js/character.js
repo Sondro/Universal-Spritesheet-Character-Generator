@@ -135,6 +135,37 @@
                 }
             }
 
+            // draw a grid
+            if(assetManager.showGrid){
+                for (let a in this.animations) {
+                    let anim = assetManager.generalAnimations[a]
+                    let width = this.animations[a].width;
+                    let height = this.animations[a].height;
+                    let cols = anim.frames;
+                    let rows = anim.directions;
+                    let tileHeight = height / rows;
+                    let tileWidth = width / cols;
+                    let ctx = this.animations[a].getContext('2d');
+                    // vertical lines
+                    console.log(cols, rows)
+                    for(let i = 0; i < cols; i++){
+                        ctx.moveTo(i * tileWidth, 0)
+                        ctx.lineTo(i * tileWidth, height)
+                        ctx.stroke()
+                    }
+                    // horizontal lines
+                    for(let i = 0; i < rows; i++){
+                        ctx.moveTo(0, i * tileHeight)
+                        ctx.lineTo(width, i * tileHeight)
+                    }
+                    ctx.moveTo(width-1, 0)
+                    ctx.lineTo(width-1, height-1)
+                    ctx.lineTo(0, height-1)
+                    ctx.stroke();
+
+                }
+            }
+
             // draw own image for each animation
             for (let layer in layers.layers) {
                 for (let s in layers.layers[layer]) {
@@ -381,7 +412,7 @@
                 }
             }
             // set cheat codes
-            for (let cheat of ['ignoreFilter', 'ignoreMandatory', 'incompleteAnimations']) {
+            for (let cheat of ['ignoreFilter', 'ignoreMandatory', 'incompleteAnimations', 'showGrid']) {
                 if (tmpSel[cheat.toLowerCase()])
                     if (tmpSel[cheat.toLowerCase()] == 'true')
                         assetManager[cheat] = true;

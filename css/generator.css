@@ -59,8 +59,3 @@ body {
     height: 16px;
     width: 16px;
 }
-
-#spritesheet canvas{
-    border-top: 1px black solid;
-    border-left: 1px black solid;
-}
