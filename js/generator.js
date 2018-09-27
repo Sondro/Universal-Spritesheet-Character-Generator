@@ -99,14 +99,19 @@ class LpcGenerator {
     }
 
     drawCanvas() {
-        let canvas = document.getElementById('spritesheet');
-        let ctx = canvas.getContext('2d');
+        let canvasContainer = document.getElementById('spritesheet');
+        //remove all children but those in the 'keep' class
+        while (canvasContainer.lastChild) {
+            canvasContainer.removeChild(canvasContainer.lastChild)
+        }
         this.character.redraw();
-        let drawn = this.character.img;
-        canvas.width = drawn.width;
-        canvas.height = drawn.height;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(drawn, 0, 0);
+    
+        for(let a in this.character.animations){
+            let anim = this.character.animations[a];
+            if(anim.height > 0 && anim.width){
+                canvasContainer.appendChild(anim)
+            }
+        }
     }
 
     generateAttribution(syntax) {
@@ -116,7 +121,7 @@ class LpcGenerator {
 
     animate() {
         let canvas = document.getElementById('previewAnimations');
-        let spritesheet = document.getElementById('spritesheet');
+        let spritesheet = this.character.img;
         let ctx = canvas.getContext('2d');
         let selector = document.getElementById('whichAnim');
         if (selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0) {

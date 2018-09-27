@@ -13,9 +13,11 @@
             if (selection) {
                 this.setSelection(selection);
             }
-            this.img = tools.createCanvas(1, 1);;
+            this.img = tools.createCanvas(1, 1);
             this.tileHeight = 0;
             this.tileWidth = 0;
+            // each animation has their own image
+            this.animations = {};
         }
 
 
@@ -95,11 +97,77 @@
             return { 'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth, 'animations': supportedAnimations };
         }
 
+
         redraw() {
             let layers = this.getLayers();
             this.img.width = layers.width;
             this.img.height = layers.height;
             let ctx = this.img.getContext('2d');
+
+            // create all missing canvases
+            // constructor runs before animations got read
+            for (let anim in assetManager.generalAnimations) {
+                if(!this.animations[anim]){
+                    this.animations[anim] = tools.createCanvas(1, 1);
+                }
+            }
+            // reset sizes of animation canvases
+            for (let anim in this.animations) {
+                this.animations[anim].width = 0;
+                this.animations[anim].height = 0;
+            }
+            // set sizes of animation canvases
+            for (let layer in layers.layers) {
+                for (let s in layers.layers[layer]) {
+                    let sprite = layers.layers[layer][s]
+                    for (let anim in sprite.supportedAnimations) {
+                        if(assetManager.generalAnimations[anim]){
+                            let width = assetManager.generalAnimations[anim].frames * sprite.tileWidth;
+                            let height = assetManager.generalAnimations[anim].directions * sprite.tileHeight;
+                            if(this.animations[anim].width < width)
+                                this.animations[anim].width = width;
+                            if(this.animations[anim].height < height)
+                                this.animations[anim].height = height;
+                        }
+                    }
+                }
+            }
+
+            // draw own image for each animation
+            for (let layer in layers.layers) {
+                for (let s in layers.layers[layer]) {
+                    let sprite = layers.layers[layer][s];
+                    let img = sprite.img;
+                    for (let a in sprite.supportedAnimations) {
+                        let anim = assetManager.generalAnimations[a]
+                        if(anim){
+                            let ctx = this.animations[a].getContext('2d');
+                            let cols = anim.frames;
+                            let rows = anim.directions;
+                            let tileHeight = this.animations[a].height / rows;
+                            let tileWidth = this.animations[a].width / cols;
+                            let xoffset = (tileWidth - sprite.tileWidth) / 2;
+                            let yoffset = (tileHeight - sprite.tileHeight) / 2;
+                            if (assetManager.allign == 'l')
+                                xoffset = 0;
+                            if (assetManager.allign == 'r')
+                                xoffset = xoffset * 2;
+                            if (assetManager.allign == 't')
+                                yoffset = 0;
+                            if (assetManager.allign == 'b')
+                                yoffset = yoffset * 2;
+                            for (let c = 0; c < cols; c++) {
+                                for (let r = 0; r < rows; r++) {
+                                    ctx.drawImage(img, c * sprite.tileWidth, (anim.row + r) * sprite.tileHeight, sprite.tileWidth, sprite.tileHeight,
+                                        c * tileWidth + xoffset, r * tileHeight + yoffset, sprite.tileWidth, sprite.tileHeight);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // draw this.img
             for (let layer in layers.layers) {
                 for (let s in layers.layers[layer]) {
                     let sprite = layers.layers[layer][s]
