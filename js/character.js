@@ -107,7 +107,7 @@
             // create all missing canvases
             // constructor runs before animations got read
             for (let anim in assetManager.generalAnimations) {
-                if(!this.animations[anim]){
+                if (!this.animations[anim]) {
                     this.animations[anim] = tools.createCanvas(1, 1);
                 }
             }
@@ -115,18 +115,20 @@
             for (let anim in this.animations) {
                 this.animations[anim].width = 0;
                 this.animations[anim].height = 0;
+                this.animations[anim].className = (layers.animations[anim] ? '' : 'hidden');
+
             }
             // set sizes of animation canvases
             for (let layer in layers.layers) {
                 for (let s in layers.layers[layer]) {
                     let sprite = layers.layers[layer][s]
                     for (let anim in sprite.supportedAnimations) {
-                        if(assetManager.generalAnimations[anim]){
+                        if (assetManager.generalAnimations[anim]) {
                             let width = assetManager.generalAnimations[anim].frames * sprite.tileWidth;
                             let height = assetManager.generalAnimations[anim].directions * sprite.tileHeight;
-                            if(this.animations[anim].width < width)
+                            if (this.animations[anim].width < width)
                                 this.animations[anim].width = width;
-                            if(this.animations[anim].height < height)
+                            if (this.animations[anim].height < height)
                                 this.animations[anim].height = height;
                         }
                     }
@@ -140,7 +142,7 @@
                     let img = sprite.img;
                     for (let a in sprite.supportedAnimations) {
                         let anim = assetManager.generalAnimations[a]
-                        if(anim){
+                        if (anim) {
                             let ctx = this.animations[a].getContext('2d');
                             let cols = anim.frames;
                             let rows = anim.directions;

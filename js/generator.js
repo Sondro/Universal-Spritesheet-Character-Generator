@@ -121,20 +121,20 @@ class LpcGenerator {
 
     animate() {
         let canvas = document.getElementById('previewAnimations');
-        let spritesheet = this.character.img;
         let ctx = canvas.getContext('2d');
         let selector = document.getElementById('whichAnim');
         if (selector.selectedIndex >= 0 && this.character.tileWidth > 0 && this.character.tileHeight > 0) {
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];
             if (animation) {
+                let spritesheet = this.character.animations[selected];
                 canvas.width = this.character.tileWidth * animation.directions;
                 canvas.height = this.character.tileHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let position = this.counter % animation.frames;
                 let x = position * this.character.tileWidth;
                 for (let i = 0; i < animation.directions; i++) {
-                    let y = (i + animation.row) * this.character.tileHeight;
+                    let y = i * this.character.tileHeight;
                     ctx.drawImage(spritesheet, x, y, this.character.tileWidth, this.character.tileHeight, i * this.character.tileWidth, 0, this.character.tileWidth, this.character.tileHeight);
                 }
             } else {
