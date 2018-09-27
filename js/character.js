@@ -23,10 +23,6 @@
         //extract active layers from location bar
         getLayers() {
             let sprites = [];
-            let width = 1;
-            let height = 1;
-            let tileWidth = 1;
-            let tileHeight = 1;
             let supportedAnimations = {};
             // initialize all possible animations
             for (let anim in assetManager.generalAnimations) {
@@ -79,21 +75,13 @@
                     if (sprites[j].layer == i) {
                         if (sprites[j].img) {
                             layers[newLayer].push(sprites[j])
-                            if (sprites[j].img.width > width)
-                                width = sprites[j].img.width
-                            if (sprites[j].img.height > height)
-                                height = sprites[j].img.height
-                            if (sprites[j].tileWidth > tileWidth)
-                                tileWidth = sprites[j].tileWidth
-                            if (sprites[j].tileHeight > tileHeight)
-                                tileHeight = sprites[j].tileHeight
                         } else {
                             console.error('Sprite "' + sprites[j].name + '" not loaded');
                         }
                     }
                 }
             }
-            return { 'layers': layers, 'height': height, 'width': width, 'tileHeight': tileHeight, 'tileWidth': tileWidth, 'animations': supportedAnimations };
+            return { 'layers': layers, 'animations': supportedAnimations };
         }
 
 

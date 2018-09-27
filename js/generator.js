@@ -152,7 +152,6 @@ class LpcGenerator {
 
     updateGui() {
         let mainList = document.getElementById('chooser').getElementsByTagName('ul')[0];
-        let layers = this.character.getLayers();
         let selector = document.getElementById('whichAnim');
         let selected = assetManager.defaultAnimation;
         if (selector.selectedIndex >= 0)
@@ -179,9 +178,11 @@ class LpcGenerator {
         for (let i in mainCategories) {
             this.drawCategory(mainList, mainCategories[i].name, mainCategories[i])
         }
-        //let radio = document.querySelector('input[name="' + f + '"]:checked')
-        for (let animation in assetManager.generalAnimations) {
-            if (layers.animations[animation]) {
+        // animation selector depends on this
+        this.drawCanvas();
+        for (let animation in this.character.animations) {
+            console.log(this.character.animations[animation].className)
+            if (this.character.animations[animation].className != 'hidden') {
                 let option = document.createElement('option');
                 option.value = animation;
                 option.textContent = assetManager.generalAnimations[animation].name;
@@ -190,7 +191,6 @@ class LpcGenerator {
                 selector.appendChild(option);
             }
         }
-        this.drawCanvas();
         this.generateAttribution();
     }
 
