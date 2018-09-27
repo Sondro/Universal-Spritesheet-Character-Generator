@@ -131,7 +131,6 @@
                     let tileWidth = width / cols;
                     let ctx = this.animations[a].getContext('2d');
                     // vertical lines
-                    console.log(cols, rows)
                     for(let i = 0; i < cols; i++){
                         ctx.moveTo(i * tileWidth, 0)
                         ctx.lineTo(i * tileWidth, height)

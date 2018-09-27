@@ -126,8 +126,8 @@ class LpcGenerator {
         if (selector.selectedIndex >= 0) {
             let selected = selector.options[selector.selectedIndex].value;
             let animation = assetManager.generalAnimations[selected];
-            if (animation) {
-                let spritesheet = this.character.animations[selected];
+            let spritesheet = this.character.animations[selected];
+            if (animation && spritesheet) {
                 let tileHeight = spritesheet.height / animation.directions;
                 let tileWidth = spritesheet.width / animation.frames;
                 canvas.width = tileWidth * animation.directions;
@@ -180,9 +180,9 @@ class LpcGenerator {
         }
         // animation selector depends on this
         this.drawCanvas();
-        for (let animation in this.character.animations) {
-            console.log(this.character.animations[animation].className)
-            if (this.character.animations[animation].className != 'hidden') {
+        let animations = this.character.animations;
+        for (let animation in animations) {
+            if (assetManager.generalAnimations[animation] && animations[animation].className != 'hidden') {
                 let option = document.createElement('option');
                 option.value = animation;
                 option.textContent = assetManager.generalAnimations[animation].name;

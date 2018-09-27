@@ -83,7 +83,7 @@
             //new Animation(this.generalAnimations, xml.getElementsByTagName('tile'))
             let properties = xml.getElementsByTagName('properties')[0].getElementsByTagName('property');
             //initialized
-            let attributes = { layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: 0 };
+            let attributes = { layer: 0, author: 'unknown', category: 'uncategorized', sex: 0, license: 'unknown', url: '', incomplete: false, broken: false, hidden: false };
             let animations = {};
             //parse all custom properties
             for (let i = 0; i < properties.length; i++) {
@@ -115,8 +115,11 @@
             if (attributes['layer'] < this.layers.min)
                 this.layers.min = attributes['layer'];
             //don't load incomplete spritesheets
-            if (attributes['incomplete'] == 'true')
+            if (attributes['incomplete'] == 'true' || attributes['hidden'] == 'true' || attributes['broken'] == 'true'){
+                that.decreasePending(fullPath);
+                console.error('Skipped incomplete/hidden file ' + fullpath)
                 return;
+            }
             //parse all tile properties
             for (let i = 0; i < tiles.length; i++) {
                 let tile = tiles[i];
