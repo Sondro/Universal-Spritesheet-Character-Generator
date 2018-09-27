@@ -160,10 +160,13 @@ class LpcGenerator {
         // set inputs for virtual categories of pure filters
         // real categories aren't added to html yet
         for (let s in this.character.selection) {
-            let value = this.character.selection[s].join('.');
-            let radio = document.querySelector('input[name="' + s + '"][value="' + value + '"]')
-            if (radio)
-                radio.checked = 'checked';
+            // ignore flags like "&incompleteAnimations=true"
+            if(this.character.selection[s] != 'true') {
+                let value = this.character.selection[s].join('.');
+                let radio = document.querySelector('input[name="' + s + '"][value="' + value + '"]')
+                if (radio)
+                    radio.checked = 'checked';
+            }
         }
         let mainCategories = assetManager.categories.getCategories();
         for (let i in mainCategories) {
